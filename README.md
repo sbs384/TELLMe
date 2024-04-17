@@ -52,7 +52,7 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
 In the model retrieval stage, we first fine-tuned 50 pre-trained models as candidate pool. All the pre-trained model used can be found on huggingface according to the models' name. The list of pre-trained models and their performance on the ReQA BioASQ 9b, SciFact and NQ datasets are represented as follows.
 
 ### Pre-trained model Performance on the ReQA BioASQ 9b Dataset
-| Number | Pre-trained Model | MRR | P@1 | R@5 |
+<center>| Number | Pre-trained Model | MRR | P@1 | R@5 |</center>
 | :---         | :---      | :---: | :---: | :---: |
 | 1 | bert-base-uncased | 0.693 | 0.588 | 0.673 |
 | 2 | bert-base-cased | 0.677 | 0.572 | 0.637 |
