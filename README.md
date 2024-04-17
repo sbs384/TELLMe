@@ -14,35 +14,35 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
 <table align="center" style="text-align: center;">
    <tr>
       <td rowspan="2">Datasets</td>
-      <td colspan="2">Training Set</td>
-      <td colspan="2">Test Set</td>
+      <td colspan="2" align="center">Training Set</td>
+      <td colspan="2" align="center">Test Set</td>
    </tr>
    <tr>
-      <td>#Q</td>
-      <td>#D</td>
-      <td>#D</td>
-      <td>#D</td>
+      <td align="center">#Q</td>
+      <td align="center">#D</td>
+      <td align="center">#D</td>
+      <td align="center">#D</td>
    </tr>
    <tr>
       <td>ReQA BioASQ 9b</td>
-      <td>5,828</td>
-      <td>5,828</td>
-      <td>496</td>
-      <td>31,682</td>
+      <td align="center">5,828</td>
+      <td align="center">5,828</td>
+      <td align="center">496</td>
+      <td align="center">31,682</td>
    </tr>
   <tr>
       <td>SciFact</td>
-      <td>919</td>
-      <td>919</td>
-      <td>300</td>
-      <td>5,183</td>
+      <td align="center">919</td>
+      <td align="center">919</td>
+      <td align="center">300</td>
+      <td align="center">5,183</td>
    </tr>
    <tr>
       <td>NQ</td>
-      <td>58,880</td>
-      <td>58,880</td>
-      <td>10,125</td>
-      <td>10,125</td>
+      <td align="center">58,880</td>
+      <td align="center">58,880</td>
+      <td align="center">10,125</td>
+      <td align="center">10,125</td>
    </tr>
 </table>
 
