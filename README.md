@@ -17,9 +17,8 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
 In the model retrieval stage, we first fine-tuned 50 pre-trained models as candidate pool. All the pre-trained model used can be found on huggingface according to the models' name. The list of pre-trained models and their performance on the ReQA BioASQ 9b, SciFact and NQ datasets are represented as follows.
 
 ### Pre-trained model Performance on ReQA BioASQ 9b Dataset
-| Left-aligned | Left-aligned | Center-aligned | Center-aligned | Center-aligned |
-| :---         | :---      | :---: | :---: | :---: |
 | Number | Pre-trained Model | MRR | P@1 | R@5 |
+| :---         | :---      | :---: | :---: | :---: |
 | 1 | bert-base-uncased | 0.693 | 0.588 | 0.673 |
 | 2 | bert-base-cased | 0.677 | 0.572 | 0.637 |
 | 3 | roberta-base | 0.625 | 0.508 | 0.617 |
@@ -72,9 +71,8 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 | 50 | roberta-argument | 0.631 | 0.517 | 0.613 |
 
 ### Pre-trained model Performance on SciFact Dataset
-| Left-aligned | Left-aligned | Center-aligned | Center-aligned | Center-aligned |
-| :---         | :---      | :---: | :---: | :---: |
 | Number | Pre-trained Model | MRR | P@1 | R@5 |
+| :---         | :---      | :---: | :---: | :---: |
 1 | bert-base-uncased | 0.618 | 0.515 | 0.724 |
 2 | bert-base-cased | 0.607 | 0.505 | 0.709 |
 3 | roberta-base & 0.578 | 0.476 | 0.681 |
@@ -90,10 +88,10 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 13 | distilbert-base-uncased | 0.611 | 0.512 | 0.714 |
 14 | ernie-2.0-base-en | 0.647 | 0.547 | 0.757 |
 15 | distilroberta-base | 0.552 | 0.449 | 0.659 |
-16 | distilgpt2 & 0.096 | 0.047 | 0.118 |
+16 | distilgpt2 | 0.096 | 0.047 | 0.118 |
 17 | distilbert-base-multilingual-cased | 0.567 | 0.462 | 0.683 |
-18 | albert-base-v2 & 0.502 & 0.385 | 0.628 |
-19 | BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext & 0.720 & 0.609 & 0.852 |
+18 | albert-base-v2 | 0.502 | 0.385 | 0.628 |
+19 | BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext | 0.720 | 0.609 | 0.852 |
 20 | BioLinkBERT-base | 0.726 | 0.619 | 0.858 |
 21 | ClinicalBERT | 0.551 | 0.445 | 0.669 |
 22 | bluebert_pubmed_uncased_L-12_H-768_A-12 | 0.600 | 0.489 | 0.709 |
@@ -101,11 +99,11 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 24 | oubiobert-base-uncased | 0.698 | 0.579 | 0.843 |
 25 | bioelectra-base-discriminator-pubmed | 0.380 | 0.279 | 0.477 |
 26 | BioRedditBERT-uncased | 0.620 | 0.519 | 0.729 |
-27 | mirror-bert-base-uncased-word | 0.606 & 0.497 | 0.726 |
+27 | mirror-bert-base-uncased-word | 0.606 | 0.497 | 0.726 |
 28 | SapBERT-from-PubMedBERT-fulltext | 0.689 | 0.577 | 0.818 |
-29 | electra-medal & 0.165 & 0.084 | 0.216 |
-30 | xlm-roberta-base & 0.518 & 0.406 | 0.635 |
-31 | spanbert-base-cased & 0.681 & 0.605 | 0.763 |
+29 | electra-medal | 0.165 | 0.084 | 0.216 |
+30 | xlm-roberta-base | 0.518 | 0.406 | 0.635 |
+31 | spanbert-base-cased | 0.681 | 0.605 | 0.763 |
 32 | BERT-of-Theseus-MNLI | 0.471 | 0.371 | 0.573 |
 33 | mirror-bert | 0.490 | 0.410 | 0.568 |
 34 | bio_roberta-base_pubmed | 0.606 | 0.490 | 0.730 |
@@ -127,9 +125,8 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 50 | roberta-argument | 0.564 | 0.463 | 0.669 |
 
 ### Pre-trained model Performance on NQ Dataset
-| Left-aligned | Left-aligned | Center-aligned | Center-aligned | Center-aligned |
-| :---         | :---      | :---: | :---: | :---: |
 | Number | Pre-trained Model | MRR | P@1 | R@5 |
+| :---         | :---      | :---: | :---: | :---: |
 | 1 | bert-base-uncased | 0.619 | 0.532 | 0.730 |
 | 2 | bert-base-cased | 0.567 | 0.471 | 0.690 |
 | 3 | roberta-base | 0.600 | 0.510 | 0.714 |
@@ -180,11 +177,32 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 | 48 | BERTLaw | 0.508 | 0.416 | 0.624 |
 | 49 | biomed_roberta_base | 0.585 | 0.496 | 0.700 |
 | 50 | roberta-argument | 0.597 | 0.511 | 0.711 |
-
-            
+           
 
 ## Candidate Pre-trained Models for Model Ranking
 In the model ranking stage, we randomly selected 20 models from the aforementioned pool of 50 candidates:
+| Number | Pre-trained Model 
+| :---   | :---: |
+| 1 |bert-base-uncased |
+| 2 | bert-base-cased |
+| 3 | roberta-base |
+| 4 | biobert-base-cased-v1.1 |
+| 5 | electra-base-discriminator |
+| 6 | unsup-simcse-bert-base-uncased |
+| 7 | sup-simcse-bert-base-uncased |
+| 8 | openai-gpt |
+| 9 | bart-base |
+| 10 | scibert_scivocab_cased |
+| 11 | scibert_scivocab_uncased |
+| 12 | distilbert-base-cased |
+| 13 | distilbert-base-uncased |
+| 14 | ernie-2.0-base-en |
+| 15 | distilroberta-base |
+| 16 | distilgpt2 |
+| 17 | distilbert-base-multilingual-cased |
+| 18 | albert-base-v2 |
+| 19 | BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext |
+| 20 | BioLinkBERT-base |
 
 
 ## Example
