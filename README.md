@@ -10,7 +10,8 @@ torch==2.1.0
 ```
 
 ## Datasets
-The proposed TELLMe framework involves 2 stage: model retrieval and model selection. We implement experiments on 3 datasets: ReQA BioASQ 9b, SciFact and NQ. It is noted that we use 10,000 samples extracted from NQ to calculate EaSe scores for model ranking, which is named as 'NQ_sample'. All the datasets can be download from [AllNLI.tsv.gz](https://sbert.net/datasets/AllNLI.tsv.gz). The downloaded data package should be unzip to "./data/". Here is the statistics information of the 3 datasets:
+The proposed TELLMe framework involves 2 stage: model retrieval and model selection. We implement experiments on 3 datasets: ReQA BioASQ 9b, SciFact and NQ. It is noted that we use 10,000 samples extracted from NQ to calculate EaSe scores for model ranking, which is named as 'NQ_sample'. Table 1 describes the statistics of all the datasets:
+### Table 1. Dataset Statistics
 <table>
    <tr>
       <td rowspan="2">Datasets</td>
@@ -48,9 +49,9 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
 #Q，#D，#C represent the query number, the document number and candidate document number respectively.
 
 ## Candidate Pre-trained Models for Model Retrieval
-In the model retrieval stage, we first fine-tuned 50 pre-trained models as candidate pool. All the pre-trained model used can be found on huggingface according to the models' name. The list of pre-trained models and their performance on the ReQA BioASQ 9b, SciFact and NQ datasets are represented as follows.
+In the model retrieval stage, we first fine-tuned 50 pre-trained models as candidate pool. All the pre-trained model used can be found on huggingface according to the models' name. The list of pre-trained models and their performance on the ReQA BioASQ 9b, SciFact and NQ datasets are represented in Table 2, Table 3 and Table 4.
 
-### Pre-trained model Performance on the ReQA BioASQ 9b Dataset
+### Table 2. Pre-trained model Performance on the ReQA BioASQ 9b Dataset
 | Number | Pre-trained Model | MRR | P@1 | R@5 |
 | :---         | :---      | :---: | :---: | :---: |
 | 1 | bert-base-uncased | 0.693 | 0.588 | 0.673 |
@@ -105,7 +106,7 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 | 50 | roberta-argument | 0.631 | 0.517 | 0.613 |
 
 
-### Pre-trained model Performance on the SciFact Dataset
+### Table 3. Pre-trained model Performance on the SciFact Dataset
 | Number | Pre-trained Model | MRR | P@1 | R@5 |
 | :---         | :---      | :---: | :---: | :---: |
 1 | bert-base-uncased | 0.618 | 0.515 | 0.724 |
@@ -159,7 +160,7 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 49 | biomed_roberta_base | 0.580 | 0.467 | 0.700 |
 50 | roberta-argument | 0.564 | 0.463 | 0.669 |
 
-### Pre-trained model Performance on the NQ Dataset
+### Table 4. Pre-trained model Performance on the NQ Dataset
 | Number | Pre-trained Model | MRR | P@1 | R@5 |
 | :---         | :---      | :---: | :---: | :---: |
 | 1 | bert-base-uncased | 0.619 | 0.532 | 0.730 |
@@ -215,7 +216,8 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
            
 
 ## Candidate Pre-trained Models for Model Ranking
-In the model ranking stage, we randomly selected 20 models from the aforementioned pool of 50 candidates:
+In the model ranking stage, we randomly selected 20 models from the aforementioned pool of 50 candidates, which are showed in Table 5.
+### Table 5. Pre-trained Models for Model Ranking
 | Number | Pre-trained Model 
 | :---   | :--- |
 | 1 |bert-base-uncased |
@@ -244,10 +246,38 @@ In the model ranking stage, we randomly selected 20 models from the aforemention
 We show the running cases of the code used for the related experiments. 
 
 ### Fine-tuning
-First of all, run the script "run_data_processing.sh".
+To fine-tune all the candidate pre-trained models, run the script "run_reqa.sh". In the following example, we show a fine-tuning process of bert-base-un-cased(BERT) and dmis-lab/biobert-base-cased-v1.1(BioBERT) on bioasq9b. To obtain the best performance of each pre-trained model on different dataset, we tried several hyper-parameter combinations. For the ReQA and SciFact datasets, learning rate is set among 1e-5, 2e-5, 3e-4, 4e-5 and 5e-5; seeds are set to 0, 42 and 512. For the NQ dataset, learning rate is set among 2e-5, 3e-4, 4e-5 and 5e-5; seeds are set to 0, 42 and 512. Other args are the same as what showed in the script example.
 ```bash
-# Transform the BioASQ 9b dataset into ReQA BioASQ 9b.
-python3 reqa_bioasq_data_processing.py --dataset 9b
+export  CUDA_VISIBLE_DEVICES=0
+DATASET=bioasq9b
+POOLER=mean
+BATCH_SIZE=32
+NUM_EPOCHS=10
+CACHE_DIR=/home/lzz/myfile/models  # your path to the pre-trained model parameters
+for PLM in bert-base-uncased dmis-lab/biobert-base-cased-v1.1
+do
+    for LR in 1e-5 2e-5 3e-5 4e-5 5e-5
+    do
+        SAVE_DIR=./output/${DATASET}/fine_tuning/${PLM#*/}_${POOLER}/bs${BATCH_SIZE}_e${NUM_EPOCHS}_lr${LR}/
+        mkdir -p ${SAVE_DIR}
+        nohup python3 train_reqa.py \
+            --seeds 0 42 512 2023 20246\
+            --main_metric mrr \
+            --dataset ${DATASET} \
+            --epoch ${NUM_EPOCHS} \
+            --batch_size ${BATCH_SIZE} \
+            --pooler ${POOLER} \
+            --model_name_or_path ${PLM} \
+            --matching_func dot \
+            --temperature 1 \
+            --cache_dir ${CACHE_DIR} \
+            --learning_rate ${LR} \
+            --save_dir ${SAVE_DIR} \
+            --rm_saved_model True \
+            --save_results True \
+            > ${SAVE_DIR}/run.log 2>&1
+    done 
+done
 ```
 
 ### Model ranking
