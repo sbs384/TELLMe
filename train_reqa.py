@@ -414,72 +414,55 @@ def main():
     parser.add_argument('--cache_dir', type=str, default="")
     parser.add_argument("--rm_saved_model", type=str, default="True")
     parser.add_argument('--temperature', type=float)
-
     args = parser.parse_args()
+   
+  
+    if not os.path.exists(args.save_dir):
+        os.makedirs(args.save_dir)
 
-    PLMs = ["McGill-NLP/electra-medal",
-"xlm-roberta-base",
-"SpanBERT/spanbert-base-cased",
-"canwenxu/BERT-of-Theseus-MNLI",
-"slider/mirror-bert",
-"minhpqn/bio_roberta-base_pubmed",
-"tbs17/MathBERT",
-"antoinelouis/netbert"
-]
-    #LRs_dict = {"chkla/roberta-argument": 5e-5, "xlm-roberta-base": [4e-5, 5e-5], "SpanBERT/spanbert-base-cased": [3e-5, 4e-5, 5e-5], "cambridgeltl/mirrorwic-bert-base-uncased": [2e-5, 3e-5, 4e-5, 5e-5]}
-    for PLM in PLMs:
-        args.model_name_or_path = PLM
-        for LR in [2e-5, 3e-5, 4e-5, 5e-5]:
-            args.learning_rate = LR
-            plm_last = args.model_name_or_path.split("/")[-1]
-            args.save_dir = f"./output/{args.dataset}/fine_tuning_logits/{plm_last}_{args.pooler}/bs{args.batch_size}_e{args.epoch}_lr{args.learning_rate}/"
-            # set path
-            if not os.path.exists(args.save_dir):
-                os.makedirs(args.save_dir)
-
-            logger.info(args)
+    logger.info(args)
     
-            # set device
-            args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # set device
+    args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-            # record results
-            results = dict()
-            predict_logits = dict()
+    # record results
+    results = dict()
+    predict_logits = dict()
     
-            for seed in args.seeds:
-                # set seed
-                args.seed = seed
-                set_seed(args.seed)
+    for seed in args.seeds:
+        # set seed
+        args.seed = seed
+        set_seed(args.seed)
         
-                # load dataset
-                train_data_loader, test_question_data_loader, test_candidate_data_loader = prepare_dataloaders(args)
+        # load dataset
+        train_data_loader, test_question_data_loader, test_candidate_data_loader = prepare_dataloaders(args)
 
-                # preparing model
-                model = prepare_model(args)
+        # preparing model
+        model = prepare_model(args)
 
-                # training
-                run(model, train_data_loader, test_question_data_loader, test_candidate_data_loader, args, results, predict_logits)
+        # training
+        run(model, train_data_loader, test_question_data_loader, test_candidate_data_loader, args, results, predict_logits)
 
     
-            results["overall"] = defaultdict(dict)
-            results["overall"]["mrr"]["mean"] = np.mean([results[seed]["mrr"] for seed in args.seeds])
-            results["overall"]["mrr"]["std"] = np.std([results[seed]["mrr"] for seed in args.seeds])
-            results["overall"]["p1"]["mean"] = np.mean([results[seed]["p1"] for seed in args.seeds])
-            results["overall"]["p1"]["std"] = np.std([results[seed]["p1"] for seed in args.seeds])
-            results["overall"]["r5"]["mean"] = np.mean([results[seed]["r5"] for seed in args.seeds])
-            results["overall"]["r5"]["std"] = np.std([results[seed]["r5"] for seed in args.seeds])
-            results["overall"]["r10"]["mean"] = np.mean([results[seed]["r10"] for seed in args.seeds])
-            results["overall"]["r10"]["std"] = np.std([results[seed]["r10"] for seed in args.seeds])
+    results["overall"] = defaultdict(dict)
+    results["overall"]["mrr"]["mean"] = np.mean([results[seed]["mrr"] for seed in args.seeds])
+    results["overall"]["mrr"]["std"] = np.std([results[seed]["mrr"] for seed in args.seeds])
+    results["overall"]["p1"]["mean"] = np.mean([results[seed]["p1"] for seed in args.seeds])
+    results["overall"]["p1"]["std"] = np.std([results[seed]["p1"] for seed in args.seeds])
+    results["overall"]["r5"]["mean"] = np.mean([results[seed]["r5"] for seed in args.seeds])
+    results["overall"]["r5"]["std"] = np.std([results[seed]["r5"] for seed in args.seeds])
+    results["overall"]["r10"]["mean"] = np.mean([results[seed]["r10"] for seed in args.seeds])
+    results["overall"]["r10"]["std"] = np.std([results[seed]["r10"] for seed in args.seeds])
 
-            logger.info(f'[Overall] MRR ={results["overall"]["mrr"]["mean"]: 3.2f} %, '\
+    logger.info(f'[Overall] MRR ={results["overall"]["mrr"]["mean"]: 3.2f} %, '\
                                                f'P@1 ={results["overall"]["p1"]["mean"]: 3.2f} %, '\
                                                f'R@5 ={results["overall"]["r5"]["mean"]: 3.2f} %, '\
                                                f'R@10 ={results["overall"]["r10"]["mean"]: 3.2f} %.')
     
-            if args.save_results == "True":
-                with open(args.save_dir + "/results.json", 'w', encoding='utf-8') as f:
-                    json.dump(results, f, indent=4)
-                torch.save(predict_logits, args.save_dir + "/predict_logits")
+    if args.save_results == "True":
+        with open(args.save_dir + "/results.json", 'w', encoding='utf-8') as f:
+            json.dump(results, f, indent=4)
+        torch.save(predict_logits, args.save_dir + "/predict_logits")
 
 
 if __name__ == '__main__':
