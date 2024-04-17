@@ -16,6 +16,7 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
 ## Candidate Pre-trained Models for Model Retrieval
 In the model retrieval stage, we first fine-tuned 50 pre-trained models as candidate pool. All the pre-trained model used can be found on huggingface according to the models' name. The list of pre-trained models and their performance on the ReQA BioASQ 9b, SciFact and NQ datasets are represented as follows.
 
+###Pre-trained model Performance on ReQA BioASQ 9b Dataset
 | Left-aligned | Left-aligned | Center-aligned | Center-aligned | Center-aligned |
 | :---         | :---      | :---: | :---: | :---: |
 | Number | Pre-trained Model | MRR | P@1 | R@5 |
@@ -37,7 +38,7 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 | 16 | distilgpt2 | 0.454 | 0.350 | 0.414 |
 | 17 | distilbert-base-multilingual-cased | 0.629 | 0.513 | 0.615 |
 | 18 | albert-base-v2 | 0.623 | 0.516 | 0.597 |
-| 19 | BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext & 0.748 & 0.633 & 0.736 |
+| 19 | BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext | 0.748 | 0.633 | 0.736 |
 | 20 | BioLinkBERT-base | 0.717 | 0.600 | 0.713 |
 | 21 | ClinicalBERT | 0.603 | 0.494 | 0.587 |
 | 22 | bluebert_pubmed_uncased_L-12_H-768_A-12 | 0.623 & 0.512 & 0.601 |
@@ -52,7 +53,7 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 | 31 | spanbert-base-cased | 0.650 | 0.545 | 0.624 |
 | 32 | BERT-of-Theseus-MNLI | 0.594 | 0.491 | 0.560 |
 | 33 | mirror-bert & 0.619 | 0.527 & 0.568 |
-| 34 | bio_roberta-base_pubmed | 0.632 | 0.510 & 0.624 |
+| 34 | bio_roberta-base_pubmed | 0.632 | 0.510 | 0.624 |
 | 35 | MathBERT | 0.552 | 0.456 | 0.501 |
 | 36 | netbert | 0.631 | 0.532 | 0.589 |
 | 37 | legal-bert-base-uncased | 0.664 | 0.563 | 0.639 |
@@ -69,6 +70,62 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 | 48 | BERTLaw | 0.571 | 0.471 | 0.527 |
 | 49 | biomed_roberta_base | 0.631 | 0.510 | 0.618 |
 | 50 | roberta-argument | 0.631 | 0.517 | 0.613 |
+
+###Pre-trained model Performance on NQ Dataset
+| Left-aligned | Left-aligned | Center-aligned | Center-aligned | Center-aligned |
+| :---         | :---      | :---: | :---: | :---: |
+| Number | Pre-trained Model | MRR | P@1 | R@5 |
+| 1 | bert-base-uncased | 0.619 | 0.532 | 0.730 |
+| 2 | bert-base-cased | 0.567 | 0.471 | 0.690 |
+| 3 | roberta-base | 0.600 | 0.510 | 0.714 |
+| 4 | biobert-base-cased-v1.1 | 0.542 | 0.449 | 0.660 |
+| 5 | electra-base-discriminator | 0.543 | 0.447 | 0.666 |
+| 6 | unsup-simcse-bert-base-uncased | 0.615 | 0.526 | 0.728 |
+| 7 | sup-simcse-bert-base-uncased | 0.620 | 0.533 | 0.732 |
+| 8 | openai-gpt | 0.536 | 0.437 | 0.661 |
+| 9 | bart-base | 0.514 | 0.431 | 0.617 |
+| 10 | scibert_scivocab_cased | 0.544 | 0.453 | 0.657 |
+| 11 | scibert_scivocab_uncased | 0.574 | 0.485 | 0.687 |
+| 12 | distilbert-base-cased | 0.558 | 0.461 | 0.679 |
+| 13 | distilbert-base-uncased | 0.608 | 0.520 | 0.719 |
+| 14 | ernie-2.0-base-en |  0.634 | 0.550 | 0.741 |
+| 15 | distilroberta-base | 0.579 | 0.488 | 0.696 |
+| 16 | distilgpt2 | 0.489 | 0.383 | 0.621 |
+| 17 | distilbert-base-multilingual-cased | 0.550 | 0.454 | 0.670 |
+| 18 | albert-base-v2 | 0.542 | 0.448 | 0.660 |
+| 19 | BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext | 0.574 | 0.487 | 0.684 |
+| 20 | BioLinkBERT-base | 0.577 | 0.491 | 0.687 |
+| 21 | ClinicalBERT | 0.551 | 0.460 | 0.665 |
+| 22 | bluebert_pubmed_uncased_L-12_H-768_A-12 | 0.543 | 0.450 | 0.660 |
+| 23 | bert-medical-ner-proj | 0.617 | 0.529 | 0.730 |
+| 24 | oubiobert-base-uncased | 0.565 | 0.476 | 0.679 |
+| 25 | bioelectra-base-discriminator-pubmed | 0.482 | 0.387 | 0.597 |
+| 26 | BioRedditBERT-uncased | 0.569 | 0.478 | 0.686 |
+| 27 | mirror-bert-base-uncased-word | 0.618 | 0.529 | 0.732 |
+| 28 | SapBERT-from-PubMedBERT-fulltext | 0.568 | 0.480 | 0.677 |
+| 29 | electra-medal | 0.410 | 0.315 | 0.521 |
+| 30 | xlm-roberta-base | 0.568 | 0.476 | 0.684 |
+| 31 | spanbert-base-cased | 0.615 | 0.529 | 0.723 |
+| 32 | BERT-of-Theseus-MNLI | 0.551 | 0.453 | 0.675 |
+| 33 | mirror-bert | 0.516 | 0.424 | 0.631 |
+| 34 | bio_roberta-base_pubmed | 0.573 | 0.481 | 0.689 |
+| 35 | MathBERT | 0.461 | 0.368 | 0.577 |
+| 36 | netbert | 0.486 | 0.387 | 0.605 |
+| 37 | legal-bert-base-uncased | 0.574 | 0.487 | 0.684 |
+| 38 | graphcodebert-base | 0.538 | 0.445 | 0.653 |
+| 39 | hateBERT | 0.572 | 0.480 | 0.689 |
+| 40 | twitter-roberta-base-sentiment-latest | 0.584 | 0.494 | 0.699 |
+| 41 | RadBERT | 0.497 | 0.401 | 0.614 |
+| 42 | covid-radbert | 0.492 | 0.397 | 0.611 |
+| 43 | mobilebert-uncased | 0.559 | 0.458 | 0.690 |
+| 44 | mirrorwic-bert-base-uncased | 0.619 | 0.530 | 0.732 |
+| 45 | muppet-roberta-base | 0.598 | 0.510 | 0.710 |
+| 46 | Robust-Biomed-RoBERTa-QuestionAnswering | 0.585 | 0.494 | 0.702 |
+| 47 | math_pretrained_roberta | 0.571 | 0.478 | 0.688 |
+| 48 | BERTLaw | 0.508 | 0.416 | 0.624 |
+| 49 | biomed_roberta_base | 0.585 | 0.496 | 0.700 |
+| 50 | roberta-argument | 0.597 | 0.511 | 0.711 |
+
             
 
 ## Candidate Pre-trained Models for Model Ranking
