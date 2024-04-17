@@ -10,12 +10,17 @@ torch==2.1.0
 ```
 
 ## Dataset
-The proposed TELLMe framework involves the model retrieval and the model selection. We implement experiments on 3 datasets: ReQA BioASQ 9b, SciFact and NQ. It is noted that we use 10,000 samples extracted from NQ to calculate EaSe scores for model ranking, which is named as 'NQ_sample'. All the datasets can be download from [AllNLI.tsv.gz](https://sbert.net/datasets/AllNLI.tsv.gz). The downloaded data package should be unzip to "./data/".
+The proposed TELLMe framework involves 2 stage: model retrieval and model selection. We implement experiments on 3 datasets: ReQA BioASQ 9b, SciFact and NQ. It is noted that we use 10,000 samples extracted from NQ to calculate EaSe scores for model ranking, which is named as 'NQ_sample'. All the datasets can be download from [AllNLI.tsv.gz](https://sbert.net/datasets/AllNLI.tsv.gz). The downloaded data package should be unzip to "./data/".
 
 
 ## Candidate Pre-trained Models for Model Retrieval
 In the model retrieval stage, we first fine-tuned 50 pre-trained models as candidate pool. All the pre-trained model used can be found on huggingface according to the models' name. The list of pre-trained models and their performance on the ReQA BioASQ 9b, SciFact and NQ datasets are represented as follows.
 
+| Left-aligned | Left-aligned | Center-aligned | Center-aligned | Center-aligned |
+| :---         | :---      | :---: | :---: | :---: |
+| Number | Pre-trained Model | MRR | P@1 | R@5 |
+| 1 | bert-base-uncased | 0.693 | 0.588 | 0.673 |
+            
 
 ## Candidate Pre-trained Models for Model Ranking
 In the model ranking stage, we randomly selected 20 models from the aforementioned pool of 50 candidates:
