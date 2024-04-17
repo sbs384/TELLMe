@@ -331,8 +331,8 @@ python3 train_reqa.py \
 ### The following content is a prompt used for model retrieval on the NQ dataset, with both ICL(In-context Learning) and CoT(Chain-of-Thought). Here, $n_d=10$, $n_m=5$, $\{\mathcal{D}^{\prime}\}$ are ReQA BioASQ 9b and SciFact.
 I will give you some addtional information.The first part of the additional information is some candidate PLMs:
 
-\[1\]bert-base-uncased
-[2]bert-base-cased
+\[1]bert-base-uncased
+\[2]bert-base-cased
 [3]roberta-base
 [4]dmis-lab/biobert-base-cased-v1.1
 [5]google/electra-base-discriminator
