@@ -329,7 +329,7 @@ nohup python3 model_selection.py \
     --save_dir ${SAVE_DIR} \
     > ${SAVE_DIR}/run.log 2>&1
 ```
-#### 2. Evaluating Kendalls'$\tau$ between EaSe and fine-tuning performance of pre-trained models.
+#### 2. Evaluating Kendalls' $\tau$ between EaSe and fine-tuning performance of pre-trained models.
 run the script "eval_model_selection.py".
 ```python3 
 eval_model_selection.py
