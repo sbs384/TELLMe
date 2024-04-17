@@ -243,7 +243,7 @@ In the model ranking stage, we randomly selected 20 models from the aforemention
 ## Example
 We show the running cases of the code used for the related experiments. 
 
-### Fine-tuning 50 candidate pre-trained models.
+### Fine-tuning.
 First of all, run the script "run_data_processing.sh".
 ```bash
 # Transform the BioASQ 9b dataset into ReQA BioASQ 9b.
