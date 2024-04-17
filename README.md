@@ -282,29 +282,52 @@ done
 
 ### Model ranking
 #### 1. Calculate transferability scores using EaSe.
-run the script "run_reqa_baseline.sh".
+To calculate transferability scores, run the script "run_model_selection.sh". METHODS represents different transferability estimation methods.
 ```bash
-python3 train_reqa.py \
-    --seed 12345 \
-    --do_train True \
-    --do_test True \
-    --dev_metric p1 \
-    --dataset 6b \
-    --max_question_len 24 \
-    --max_answer_len 168 \
-    --epoch 10 \
-    --batch_size 32 \
-    --model_type dual_encoder \
-    --encoder_type biobert \
-    --plm_path /workspace/baijun/models/english/biobert-base-cased-v1.1 \ # your path to the pre-trained model parameters of bioert
-    --pooler_type mean \
-    --matching_func cos \
-    --whitening False \
-    --temperature 0.001 \
-    --learning_rate 5e-5 \
-    --save_model_path output/6b/biobert_baseline/ \
-    --rm_saved_model True \
-    --save_results True \
+#!/bin/bash
+export  CUDA_VISIBLE_DEVICES=0
+DATASETS=("bioasq9b")
+DATASET="bioasq9b"
+CACHE_DIR=/home/lzz/myfile/models # your path to the pre-trained model parameters
+
+# candidate pre-trained models for model ranking 
+LM_NAMES="bert-base-cased bert-base-uncased roberta-base dmis-lab/biobert-base-cased-v1.1 google/electra-base-discriminator \
+          princeton-nlp/unsup-simcse-bert-base-uncased princeton-nlp/sup-simcse-bert-base-uncased facebook/bart-base \
+          allenai/scibert_scivocab_cased allenai/scibert_scivocab_uncased distilbert-base-cased distilbert-base-uncased \
+          nghuyong/ernie-2.0-base-en distilroberta-base distilbert-base-multilingual-cased albert-base-v2 \
+          microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext michiyasunaga/BioLinkBERT-base distilgpt2 openai-gpt"
+
+
+SEEDS="1117 1114 1027 820 905"
+ALL_CANDIDATE_SIZES="2 3 4 5 6 7 8 9 10"
+#METHODS="PACTran-0.1-10 Logistic GBC TransRate SFDA LogME HScore NLEEP" #compared tansferability estimation methods.
+METHODS="EaSe-whitening-0 EaSe-whitening-0.05 EaSe-whitening-0.1 EaSe-whitening-0.15 EaSe-whitening-0.2 EaSe-whitening-0.25 \
+             EaSe-whitening-0.3 EaSe-whitening-0.35 EaSe-whitening-0.4 EaSe-whitening-0.45 EaSe-whitening-0.5 EaSe-whitening-0.55 \
+             EaSe-whitening-0.6 EaSe-whitening-0.65 EaSe-whitening-0.7 EaSe-whitening-0.75 EaSe-whitening-0.8 EaSe-whitening-0.85 \
+             EaSe-whitening-0.9 EaSe-whitening-0.95 EaSe-whitening-1"
+#METHODS="EaSe-0.05 EaSe-0.1 EaSe-0.15 EaSe-0.2 EaSe-0.25 \
+#             EaSe-0.3 EaSe-0.35 EaSe-0.4 EaSe-0.45 EaSe-0.5 EaSe-0.55 \
+#             EaSe-0.6 EaSe-0.65 EaSe-0.7 EaSe-0.75 EaSe-0.8 EaSe-0.85 \
+#             EaSe-0.9 EaSe-0.95 EaSe-1 EaSe-0 "
+SAVE_RESULTS="True"
+OVERWRITE_RESULTS="False"
+dataset=${DATASET}
+SAVE_DIR=./output/${DATASET}/model_selection/
+mkdir -p ${SAVE_DIR}
+nohup python3 model_selection.py \
+    --methods ${METHODS} \
+    --all_candidate_sizes $ALL_CANDIDATE_SIZES \
+    --dataset $dataset \
+    --batch_size 64 \
+    --model_name_or_paths ${LM_NAMES} \
+    --matching_func dot \
+    --pooler mean \
+    --cache_dir ${CACHE_DIR} \
+    --seeds ${SEEDS} \
+    --save_results ${SAVE_RESULTS} \
+    --overwrite_results ${OVERWRITE_RESULTS} \
+    --save_dir ${SAVE_DIR} \
+    > ${SAVE_DIR}/run.log 2>&1
 ```
 #### 2. Evaluating Kendalls'$\tau$ between EaSe and fine-tuning performance of pre-trained models.
 run the script "run_nli_ranking.sh".
@@ -327,31 +350,8 @@ python3 train_nli_ranking.py \
 ```
 
 #### 2. Fine-tuning on ReQA BioASQ
-run the script "run_reqa_rbar.sh".
-```bash
-python3 train_reqa.py \
-    --seed 12345 \
-    --do_train True \
-    --do_test True \
-    --dev_metric p1 \
-    --dataset 6b \
-    --max_question_len 24 \
-    --max_answer_len 168 \
-    --epoch 10 \
-    --batch_size 32 \
-    --model_type dual_encoder_wot \
-    --encoder_type biobert \
-    --plm_path /workspace/baijun/models/english/biobert-base-cased-v1.1 \ # your path to the pre-trained model parameters of bioert
-    --pooler_type mean \
-    --matching_func cos \
-    --whitening True \
-    --temperature 0.05 \
-    --learning_rate 5e-5 \
-    --save_model_path output/6b/biobert_rbar/ \
-    --load_model_path output/nli/biobert_ranking/model.pt \
-    --rm_saved_model True \
-    --save_results True \
-```
+run the script "python3 eval_model_selection.py".
+
 ## An entire prompt used for model retrieval
 #### The following content is an entire prompt used for model retrieval on the NQ dataset, with both ICL(In-context Learning) and CoT(Chain-of-Thought). Here, $n_d=10$, $n_m=5$, $\{\mathcal{D}^{\prime}\}$ are ReQA BioASQ 9b and SciFact. 
 
