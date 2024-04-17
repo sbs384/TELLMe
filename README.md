@@ -45,6 +45,7 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
       <td align="center">10,125</td>
    </tr>
 </table>
+#Q，#D，#C represent the query number, the document number and candidate document number respectively.
 
 
 
