@@ -330,23 +330,9 @@ nohup python3 model_selection.py \
     > ${SAVE_DIR}/run.log 2>&1
 ```
 #### 2. Evaluating Kendalls'$\tau$ between EaSe and fine-tuning performance of pre-trained models.
-run the script "run_nli_ranking.sh".
-```bash
-python3 train_nli_ranking.py \
-  --max_premise_len 64 \
-  --max_hypothesis_len 32 \
-  --epoch 3 \
-  --batch_size 32 \
-  --model_type dual_encoder_wot \
-  --encoder_type biobert \
-  --plm_path /workspace/baijun/models/english/biobert-base-cased-v1.1 \ # your path to the pre-trained model parameters of bioert
-  --matching_func cos \
-  --pooler_type mean \
-  --temperature 0.05 \
-  --save_model_path output/nli/biobert_ranking \
-  --learning_rate 2e-5 \
-  --warmup_proportion 0.1 \
-  --seed 12345
+run the script "eval_model_selection.py".
+```python3 
+eval_model_selection.py
 ```
 
 #### 2. Fine-tuning on ReQA BioASQ
