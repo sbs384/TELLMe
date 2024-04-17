@@ -16,7 +16,7 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
 ## Candidate Pre-trained Models for Model Retrieval
 In the model retrieval stage, we first fine-tuned 50 pre-trained models as candidate pool. All the pre-trained model used can be found on huggingface according to the models' name. The list of pre-trained models and their performance on the ReQA BioASQ 9b, SciFact and NQ datasets are represented as follows.
 
-###Pre-trained model Performance on ReQA BioASQ 9b Dataset
+### Pre-trained model Performance on ReQA BioASQ 9b Dataset
 | Left-aligned | Left-aligned | Center-aligned | Center-aligned | Center-aligned |
 | :---         | :---      | :---: | :---: | :---: |
 | Number | Pre-trained Model | MRR | P@1 | R@5 |
@@ -71,7 +71,62 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 | 49 | biomed_roberta_base | 0.631 | 0.510 | 0.618 |
 | 50 | roberta-argument | 0.631 | 0.517 | 0.613 |
 
-###Pre-trained model Performance on NQ Dataset
+### Pre-trained model Performance on SciFact Dataset
+| Left-aligned | Left-aligned | Center-aligned | Center-aligned | Center-aligned |
+| :---         | :---      | :---: | :---: | :---: |
+| Number | Pre-trained Model | MRR | P@1 | R@5 |
+1 | bert-base-uncased | 0.618 | 0.515 | 0.724 |
+2 | bert-base-cased | 0.607 | 0.505 | 0.709 |
+3 | roberta-base & 0.578 | 0.476 | 0.681 |
+4 | biobert-base-cased-v1.1 | 0.672 | 0.565 | 0.797 |
+5 | electra-base-discriminator | 0.385 | 0.285 | 0.476 |
+6 | unsup-simcse-bert-base-uncased | 0.603 | 0.498 | 0.710 |
+7 | sup-simcse-bert-base-uncased | 0.612 | 0.513 | 0.721 |
+8 | openai-gpt | 0.577 | 0.480 | 0.679 |
+9 | bart-base | 0.621 | 0.521 | 0.722 |
+10 | scibert_scivocab_cased | 0.647 | 0.527 | 0.795 |
+11 | scibert_scivocab_uncased | 0.686 | 0.581 | 0.803 |
+12 | distilbert-base-cased | 0.559 | 0.459 | 0.667 |
+13 | distilbert-base-uncased | 0.611 | 0.512 | 0.714 |
+14 | ernie-2.0-base-en | 0.647 | 0.547 | 0.757 |
+15 | distilroberta-base | 0.552 | 0.449 | 0.659 |
+16 | distilgpt2 & 0.096 | 0.047 | 0.118 |
+17 | distilbert-base-multilingual-cased | 0.567 | 0.462 | 0.683 |
+18 | albert-base-v2 & 0.502 & 0.385 | 0.628 |
+19 | BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext & 0.720 & 0.609 & 0.852 |
+20 | BioLinkBERT-base | 0.726 | 0.619 | 0.858 |
+21 | ClinicalBERT | 0.551 | 0.445 | 0.669 |
+22 | bluebert_pubmed_uncased_L-12_H-768_A-12 | 0.600 | 0.489 | 0.709 |
+23 | bert-medical-ner-proj | 0.579 | 0.472 | 0.694 |
+24 | oubiobert-base-uncased | 0.698 | 0.579 | 0.843 |
+25 | bioelectra-base-discriminator-pubmed | 0.380 | 0.279 | 0.477 |
+26 | BioRedditBERT-uncased | 0.620 | 0.519 | 0.729 |
+27 | mirror-bert-base-uncased-word | 0.606 & 0.497 | 0.726 |
+28 | SapBERT-from-PubMedBERT-fulltext | 0.689 | 0.577 | 0.818 |
+29 | electra-medal & 0.165 & 0.084 | 0.216 |
+30 | xlm-roberta-base & 0.518 & 0.406 | 0.635 |
+31 | spanbert-base-cased & 0.681 & 0.605 | 0.763 |
+32 | BERT-of-Theseus-MNLI | 0.471 | 0.371 | 0.573 |
+33 | mirror-bert | 0.490 | 0.410 | 0.568 |
+34 | bio_roberta-base_pubmed | 0.606 | 0.490 | 0.730 |
+35 | MathBERT | 0.513 | 0.435 | 0.588 |
+36 | netbert | 0.568 | 0.492 | 0.647 |
+37 | legal-bert-base-uncased | 0.597 | 0.497 | 0.709 |
+38 | graphcodebert-base | 0.572 | 0.467 | 0.678 |
+39 | hateBERT | 0.581 | 0.494 | 0.674 |
+40 | twitter-roberta-base-sentiment-latest | 0.549 | 0.454 | 0.650 |
+41 | RadBERT | 0.489 | 0.387 | 0.593 |
+42 | covid-radbert | 0.468 | 0.363 | 0.581 |
+43 | mobilebert-uncased | 0.275 | 0.157 | 0.398 |
+44 | mirrorwic-bert-base-uncased | 0.583 | 0.485 | 0.685 |
+45 | muppet-roberta-base | 0.577 | 0.475 | 0.685 |
+46 | Robust-Biomed-RoBERTa-QuestionAnswering | 0.578 | 0.462 | 0.714 |
+47 | math_pretrained_roberta | 0.546 | 0.437 | 0.657 |
+48 | BERTLaw | 0.531 | 0.441 | 0.619 |
+49 | biomed_roberta_base | 0.580 | 0.467 | 0.700 |
+50 | roberta-argument | 0.564 | 0.463 | 0.669 |
+
+### Pre-trained model Performance on NQ Dataset
 | Left-aligned | Left-aligned | Center-aligned | Center-aligned | Center-aligned |
 | :---         | :---      | :---: | :---: | :---: |
 | Number | Pre-trained Model | MRR | P@1 | R@5 |
