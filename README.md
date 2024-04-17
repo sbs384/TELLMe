@@ -47,8 +47,8 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
 </table>
 #Q，#D，#C represent the query number, the document number and candidate document number respectively.
 
-##Evaluation
-###模型检索
+## Evaluation
+### 模型检索
 采用top-$k$召回率（${\rm Recall@K}$, ${\rm R@K}$）作为评估指标，用于模型检索的${\rm R@K}$计算方式为：
 \begin{equation}
     \mbox{R@K} = \frac{|\Phi^{mr}_{top_K} \cap \Phi^{real}_{top_K}|}{K}
