@@ -243,14 +243,14 @@ In the model ranking stage, we randomly selected 20 models from the aforemention
 ## Example
 We show the running cases of the code used for the related experiments. 
 
-### Fine-tuning.
+### Fine-tuning
 First of all, run the script "run_data_processing.sh".
 ```bash
 # Transform the BioASQ 9b dataset into ReQA BioASQ 9b.
 python3 reqa_bioasq_data_processing.py --dataset 9b
 ```
 
-### Model ranking.
+### Model ranking
 #### 1. Calculate transferability scores using EaSe.
 run the script "run_reqa_baseline.sh".
 ```bash
