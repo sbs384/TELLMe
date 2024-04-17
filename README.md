@@ -15,23 +15,34 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
    <tr>
       <td rowspan="2">Datasets</td>
       <td colspan="2">Training Set</td>
-   </tr>
-   <tr>
-      <td>ReQA BioASQ 9b</td>
-      <td>SciFact</td>
-      <td>NQ</td>
+      <td colspan="2">Test Set</td>
    </tr>
    <tr>
       <td>#Q</td>
-      <td>5,828</td>
-      <td>919</td>
-      <td>58,880</td>
+      <td>#D</td>
+      <td>#D</td>
+      <td>#D</td>
    </tr>
    <tr>
-      <td>#D</td>
+      <td>ReQA BioASQ 9b</td>
       <td>5,828</td>
+      <td>5,828</td>
+      <td>496</td>
+      <td>31,682</td>
+   </tr>
+  <tr>
+      <td>SciFact</td>
       <td>919</td>
+      <td>919</td>
+      <td>300</td>
+      <td>5,183</td>
+   </tr>
+   <tr>
+      <td>NQ</td>
       <td>58,880</td>
+      <td>58,880</td>
+      <td>10,125</td>
+      <td>10,125</td>
    </tr>
 </table>
 
