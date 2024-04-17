@@ -327,8 +327,9 @@ python3 train_reqa.py \
     --rm_saved_model True \
     --save_results True \
 ```
-## An entire prompt example used for model retrieval
-### The following content is a prompt used for model retrieval on the NQ dataset, with both ICL(In-context Learning) and CoT(Chain-of-Thought). Here, $n_d=10$, $n_m=5$, $\{\mathcal{D}^{\prime}\}$ are ReQA BioASQ 9b and SciFact.
+## An entire prompt used for model retrieval
+#### The following content is an entire prompt used for model retrieval on the NQ dataset, with both ICL(In-context Learning) and CoT(Chain-of-Thought). Here, $n_d=10$, $n_m=5$, $\{\mathcal{D}^{\prime}\}$ are ReQA BioASQ 9b and SciFact. 
+
 I will give you some addtional information.The first part of the additional information is some candidate PLMs:
 \[1\]bert-base-uncased \
 \[2\]bert-base-cased \
@@ -420,7 +421,8 @@ You need to solve this problem in 4 steps:
 4.Combine all the knowledge you got through steps 1-3 and output the ranking list.
 Now please output a brief ranking list of 50 models instead of explanation.
 
-### Here is the output of Bing Chat responding to the prompt listed above:
+#### Here is the output of Bing Chat responding to the prompt listed above:
+
 Based on the information provided and the characteristics of the models, here is a possible ranking for the Natural Questions dataset:
 
 1. microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext
