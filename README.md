@@ -47,16 +47,6 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
 </table>
 #Q，#D，#C represent the query number, the document number and candidate document number respectively.
 
-## Evaluation
-### 模型检索
-采用top-$k$召回率（${\rm Recall@K}$, ${\rm R@K}$）作为评估指标，用于模型检索的${\rm R@K}$计算方式为：
-\begin{equation}
-    \mbox{R@K} = \frac{|\Phi^{mr}_{top_K} \cap \Phi^{real}_{top_K}|}{K}
-\end{equation}
-其中$\Phi^{mr}_{top_K}$是模型检索阶段得到的排名前$K$的模型集合，$\Phi^{real}_{top_K}$是真实的排名前$K$的模型集合。
-
-
-
 ## Candidate Pre-trained Models for Model Retrieval
 In the model retrieval stage, we first fine-tuned 50 pre-trained models as candidate pool. All the pre-trained model used can be found on huggingface according to the models' name. The list of pre-trained models and their performance on the ReQA BioASQ 9b, SciFact and NQ datasets are represented as follows.
 
