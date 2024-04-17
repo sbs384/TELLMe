@@ -1,0 +1,212 @@
+import os
+import re
+import json
+import scipy
+import jsonlines
+import numpy as np
+import pandas as pd
+from scipy.stats import spearmanr, pearsonr, weightedtau, kendalltau
+from collections import defaultdict
+#from matplotlib import pyplot as plt
+
+
+PLMS = ["bert-base-uncased",
+        "bert-base-cased", 
+        "roberta-base",
+        "dmis-lab/biobert-base-cased-v1.1",
+        "google/electra-base-discriminator",
+        "princeton-nlp/unsup-simcse-bert-base-uncased",
+        "princeton-nlp/sup-simcse-bert-base-uncased",
+        "openai-gpt",
+        "facebook/bart-base",
+        "allenai/scibert_scivocab_cased",
+        "allenai/scibert_scivocab_uncased",
+        "distilbert-base-cased",
+        "distilbert-base-uncased",
+        "nghuyong/ernie-2.0-base-en",
+        "distilroberta-base",
+        "distilgpt2",
+        "distilbert-base-multilingual-cased",
+        "albert-base-v2",
+        "microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext",
+        "michiyasunaga/BioLinkBERT-base"][:]
+
+
+ALL_METHODS = []
+
+margins = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1]
+for m in margins:
+    #ALL_METHODS.append(f"EaSe-{m}")
+    ALL_METHODS.append(f"EaSe-whitening-{m}")
+      
+
+DATASETS = ["bioasq9b"][:]
+DATASET = "bioasq9b"
+CANDIDATE_SIZES = ["2", "3", "4", "5", "6", "7", "8", "9", "10"][:]
+MAIN_METRICS = ["mrr", "p1", "r5"]
+POOLER = "mean"
+
+def get_tuned_results():
+    tuned_results = {}
+    for dataset  in DATASETS:
+        tuned_results[dataset] = {}
+        output_dir = f"output/{dataset}/fine_tuning/"
+        for folder in os.listdir(output_dir):
+            plm_name = folder.replace(f"_mean", "")
+            tuned_results[dataset][plm_name] = {}
+            tuned_results[dataset][plm_name]["best"] = {
+                "mrr": 0,
+                "p1": 0,
+                "r5": 0
+            }
+            
+            
+            for file in os.listdir(output_dir+folder):
+                lr = file.split("_")[-1].replace("lr", "")
+
+                file_path = output_dir+folder + f"/{file}/results.json"
+                with open(file_path, "r") as f:
+                    results_dict = json.load(f)
+                    max_scores = defaultdict(dict)
+
+                    for score in MAIN_METRICS:
+                        max_scores["overall"][score] = results_dict["overall"][score]["mean"]
+
+                for score in MAIN_METRICS:
+                    if max_scores["overall"][score] > tuned_results[dataset][plm_name]["best"][score]:
+                        tuned_results[dataset][plm_name]["best"][score] = max_scores["overall"][score]
+            
+    return tuned_results
+
+def get_rank(pred_list, gt_list):
+    pred_rank = np.argsort(-np.array(pred_list))
+    rank = np.where(pred_rank==np.argmax(gt_list))[0].item() + 1
+    return rank
+
+def avg_time(time_list, unit):
+    sum_time = 0.
+    for t in time_list:
+        if t == '-':
+            return t
+        sum_time += float(t)
+    try:
+        return f"%.1f%s"% (sum_time / len(time_list), unit)
+    except:
+        return "-"
+
+def summarize_results(CANDIDATE_SIZES, tuned_results, tuned_setting, predict_metric):
+
+    all_results = {}
+    main_results = {}
+    for dataset in DATASET:
+        dataset = "squad_sample"
+        all_results[dataset] = {}
+        main_results[dataset] = {}
+        
+        for candidate_size in CANDIDATE_SIZES:
+            all_results[dataset][candidate_size] = defaultdict(dict)
+            
+            for metric in MAIN_METRICS:
+                all_results[dataset][candidate_size][metric] = defaultdict(dict)
+                
+                for method in ALL_METHODS:
+                    #if metric == "mrr":
+                        #print(method)
+                    all_results[dataset][candidate_size][metric][method] = defaultdict(dict)
+                    
+                    method_result_file = f"output/{dataset}/model_selection/{method}.json"
+                    with open(method_result_file, 'r') as f:
+                        results_dict = json.load(f)
+                        
+                    rank_list = []
+                    spr_list = []
+                    pear_list = []
+                    wtau_list = []
+                    scoring_time_list = []
+                    for seed_idx in range(5):
+                        model_result_list = []
+                        model_time_list = []
+                        for plm in PLMS:
+                            if method in RANKING_METHODS:
+                                model_result_list.append(results_dict[candidate_size][plm]["all_scores"][seed_idx][predict_metric])
+                            else:
+                                model_result_list.append(results_dict[candidate_size][plm]["all_scores"][seed_idx])
+                            model_time_list.append(results_dict[candidate_size][plm]["all_times"][seed_idx])
+                        
+                        dataset_tuned_results = [tuned_results["squad"][plm.split("/")[-1]][tuned_setting][metric] for plm in PLMS]
+                        rank_list += [get_rank(model_result_list, dataset_tuned_results)]
+                        spr_list += [spearmanr(model_result_list, dataset_tuned_results).statistic]
+                        pear_list += [pearsonr(model_result_list, dataset_tuned_results).statistic]
+                        wtau_list += [kendalltau(model_result_list, dataset_tuned_results).statistic]
+                        scoring_time_list += [np.sum(model_time_list)]
+                
+                        
+                    rank = np.mean(rank_list)
+                    spr = np.mean(spr_list)
+                    pear = np.mean(pear_list)
+                    wtau = np.mean(wtau_list)
+                    scoring_time = np.mean(scoring_time_list)
+
+                    all_results[dataset][candidate_size][metric][method]['mrr'] = {"mean": np.mean(rank_list),
+                                                                                   "std": np.std(rank_list)}
+                    all_results[dataset][candidate_size][metric][method]['spr'] = {"mean": np.mean(spr_list),
+                                                                                   "std": np.std(spr_list)}
+                    all_results[dataset][candidate_size][metric][method]['pear'] = {"mean": np.mean(pear_list),
+                                                                                   "std": np.std(pear_list)}
+                    all_results[dataset][candidate_size][metric][method]['wtau'] = {"mean": np.mean(wtau_list),
+                                                                                   "std": np.std(wtau_list)}
+                    all_results[dataset][candidate_size][metric][method]['scoring_time'] = {"mean": np.mean(scoring_time_list),
+                                                                                            "std": np.std(scoring_time_list)}
+
+            def avg_score(x, metric):
+                return '%.4f'%np.mean(all_results[candidate_size][x][metric])
+
+            main_results[dataset][candidate_size] = defaultdict(dict)
+
+            for metric in MAIN_METRICS:
+                main_results[dataset][candidate_size][metric]["mean"] = {    
+                    "Methods": ALL_METHODS,
+                    "MRR": [f"{m}: {all_results[dataset][candidate_size][metric][m]['mrr']['mean']}" for m in ALL_METHODS],
+                    "Pearson": [f"{m}: {all_results[dataset][candidate_size][metric][m]['pear']['mean']}" for m in ALL_METHODS],
+                    "Sprearman": [f"{m}: {all_results[dataset][candidate_size][metric][m]['spr']['mean']}" for m in ALL_METHODS],
+                    "Kendall": [f"{m}: {all_results[dataset][candidate_size][metric][m]['wtau']['mean']}" for m in ALL_METHODS],
+                    "Scoring Time": [f"{m}: {all_results[dataset][candidate_size][metric][m]['scoring_time']['mean']}" for m in ALL_METHODS],
+                }
+                
+                main_results[dataset][candidate_size][metric]["std"] = {
+                    "Methods": ALL_METHODS,
+                    "MRR": [f"{m}: {all_results[dataset][candidate_size][metric][m]['mrr']['std']}" for m in ALL_METHODS],
+                    "Pearson": [f"{m}: {all_results[dataset][candidate_size][metric][m]['pear']['std']}" for m in ALL_METHODS],
+                    "Sprearman": [f"{m}: {all_results[dataset][candidate_size][metric][m]['spr']['std']}" for m in ALL_METHODS],
+                    "Kendall": [f"{m}: {all_results[dataset][candidate_size][metric][m]['wtau']['std']}" for m in ALL_METHODS],
+                    "Scoring Time": [f"{m}: {all_results[dataset][candidate_size][metric][m]['scoring_time']['std']}" for m in ALL_METHODS],
+                }
+            
+    return all_results, main_results
+
+
+output_dir = f"./output/{DATASET}/model_selection/"
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+output_all = f".{output_dir}/all_results.json"
+output_main = f"./{output_dir}/main_results.json"
+tuned_setting = "best"
+tuned_results = get_tuned_results()
+
+i = 1
+for plm in PLMS:
+    plm = plm.split("/")[-1]
+    line = [f"{i}", plm]
+    for dataset in DATASETS:
+        for metric in MAIN_METRICS:
+            line.append("%2.3f" % (float(tuned_results[dataset][plm]["best"][metric])/100))
+    print(' & '.join(line)+ r' \\')
+    i = i + 1
+
+
+all_results, main_results = summarize_results(CANDIDATE_SIZES, tuned_results, tuned_setting, "mrr")  
+with open(output_all, 'w', encoding='utf-8') as f:
+    json.dump(all_results, f, indent=4)
+with open(output_main, 'w', encoding='utf-8') as f:
+    json.dump(main_results, f, indent=4)
+
