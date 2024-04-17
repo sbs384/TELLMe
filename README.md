@@ -11,7 +11,7 @@ torch==2.1.0
 
 ## Datasets
 The proposed TELLMe framework involves 2 stage: model retrieval and model selection. We implement experiments on 3 datasets: ReQA BioASQ 9b, SciFact and NQ. It is noted that we use 10,000 samples extracted from NQ to calculate EaSe scores for model ranking, which is named as 'NQ_sample'. All the datasets can be download from [AllNLI.tsv.gz](https://sbert.net/datasets/AllNLI.tsv.gz). The downloaded data package should be unzip to "./data/". Here is the statistics information of the 3 datasets:
-<table>
+<table align="center">
    <tr>
       <td rowspan="2">Datasets</td>
       <td colspan="2">Training Set</td>
