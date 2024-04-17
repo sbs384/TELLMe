@@ -219,7 +219,7 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 ## Candidate Pre-trained Models for Model Ranking
 In the model ranking stage, we randomly selected 20 models from the aforementioned pool of 50 candidates:
 | Number | Pre-trained Model 
-| :---   | :---: |
+| :---   | :--- |
 | 1 |bert-base-uncased |
 | 2 | bert-base-cased |
 | 3 | roberta-base |
