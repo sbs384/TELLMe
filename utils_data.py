@@ -38,7 +38,6 @@ DO_LOWER_CASE = {
     "kamalkraj/bioelectra-base-discriminator-pubmed": True,
     "cambridgeltl/BioRedditBERT-uncased": True,
     "cambridgeltl/mirror-bert-base-uncased-word": True,
-    "albert-base-v2": True,
     "cambridgeltl/SapBERT-from-PubMedBERT-fulltext": True,
     "McGill-NLP/electra-medal": True,
     "xlm-roberta-base": False,
@@ -56,7 +55,6 @@ DO_LOWER_CASE = {
     "StanfordAIMI/RadBERT": True,
     "StanfordAIMI/covid-radbert": True,
     "google/mobilebert-uncased": True,
-    "isakbos/Q8BERT_COLA_L_512": True,
     "facebook/muppet-roberta-base": False,
     "mmoradi/Robust-Biomed-RoBERTa-QuestionAnswering": False,
     "AnReu/math_pretrained_roberta": False,
@@ -67,7 +65,7 @@ DO_LOWER_CASE = {
 
 
 def max_length(dataset: str):
-    if dataset.startswith("bioasq"):
+    if dataset.startswith("bioasq"): #13, 87(90%)
         return 24, 168
     elif dataset == "scifact":
         return 36, 512
@@ -75,6 +73,14 @@ def max_length(dataset: str):
         return 36, 36
     elif dataset == "mutual":
         return 196, 36
+    elif dataset == "NQ": # 23, 100(max); 11, 100(90%)
+        return 24, 168
+    elif dataset == "NQ_sample": # 23, 100(max); 11, 100(90%)
+        return 24, 168
+    elif dataset == "squad": # 15, 45
+        return 24, 64
+    elif dataset == "Trivia": # 184, 100
+        return 168, 96
 
 
 class BaseDataset(torch.utils.data.Dataset):
