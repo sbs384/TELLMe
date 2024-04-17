@@ -327,6 +327,156 @@ python3 train_reqa.py \
     --rm_saved_model True \
     --save_results True \
 ```
+## An entire prompt example used for model retrieval
+### The following content is a prompt used for model retrieval on the NQ dataset, with both ICL(In-context Learning) and CoT(Chain-of-Thought). Here, $n_d=10$, $n_m=5$, $\{\mathcal{D}^{\prime}\}$ are ReQA BioASQ 9b and SciFact.
+I will give you some addtional information.The first part of the additional information is some candidate PLMs:
+[1]bert-base-uncased
+[2]bert-base-cased
+[3]roberta-base
+[4]dmis-lab/biobert-base-cased-v1.1
+[5]google/electra-base-discriminator
+[6]princeton-nlp/unsup-simcse-bert-base-uncased
+[7]princeton-nlp/sup-simcse-bert-base-uncased
+[8]openai-gpt
+[9]facebook/bart-base
+[10]allenai/scibert_scivocab_cased
+[11]allenai/scibert_scivocab_uncased
+[12]distilbert-base-cased
+[13]distilbert-base-uncased
+[14]nghuyong/ernie-2.0-base-en
+[15]distilroberta-base
+[16]distilgpt2
+[17]distilbert-base-multilingual-cased
+[18]albert-base-v2
+[19]microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext
+[20]michiyasunaga/BioLinkBERT-base
+The second part of the additional information is exampled ranking results of models mentioned above on a given dataset:
+1.Dataset:ReQA BioASQ-9b.Models:[1,2,5,6,19].Ranking:[19,6,1,2,5]
+2.Dataset:ReQA BioASQ-9b.Models:[3,4,16,18,19].Ranking:[19,4,3,18,16]
+3.Dataset:ReQA BioASQ-9b.Models:[8,9,11,12,20].Ranking:[11,20,9,12,8]
+4.Dataset:ReQA BioASQ-9b.Models:[6,7,9,10,20].Ranking:[10,20,7,6,9]
+5.Dataset:ReQA BioASQ-9b.Models:[3,8,11,13,14].Ranking:[11,14,13,3,8]
+6.Dataset:SciFact.Models:[2,5,11,14,16].Ranking:[11,14,2,5,16]
+7.Dataset:SciFact.Models:[3,10,13,17,20].Ranking:[20,10,13,3,17]
+8.Dataset:SciFact.Models:[2,3,5,7,12].Ranking:[7,2,3,12,5]
+9.Dataset:SciFact.Models:[1,2,5,6,8].Ranking:[1,2,6,8,5]
+10.Dataset:SciFact.Models:[2,5,9,10,16].Ranking:[10,9,2,5,16]
+With the growing number of Pre-trained Language Models recently,fine-tuning all PLMs for model selection is not practical,I usually don't know which PLM should  be selected to achieve the best dataset performance.Here is the problem I want you to solve:For Natural Questions dataset,and the candidate models:
+[1]bert-base-uncased
+[2]bert-base-cased
+[3]roberta-base
+[4]dmis-lab/biobert-base-cased-v1.1
+[5]google/electra-base-discriminator
+[6]princeton-nlp/unsup-simcse-bert-base-uncased
+[7]princeton-nlp/sup-simcse-bert-base-uncased
+[8]openai-gpt
+[9]facebook/bart-base
+[10]allenai/scibert_scivocab_cased
+[11]allenai/scibert_scivocab_uncased
+[12]distilbert-base-cased
+[13]distilbert-base-uncased
+[14]nghuyong/ernie-2.0-base-en
+[15]distilroberta-base
+[16]distilgpt2
+[17]distilbert-base-multilingual-cased
+[18]albert-base-v2
+[19]microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext
+[20]michiyasunaga/BioLinkBERT-base
+[21]medicalai/ClinicalBERT
+[22]bionlp/bluebert_pubmed_uncased_L-12_H-768_A-12
+[23]medical-ner-proj/bert-medical-ner-proj
+[24]seiya/oubiobert-base-uncased
+[25]kamalkraj/bioelectra-base-discriminator-pubmed
+[26]cambridgeltl/BioRedditBERT-uncased
+[27]cambridgeltl/mirror-bert-base-uncased-word
+[28]cambridgeltl/SapBERT-from-PubMedBERT-fulltext
+[29]McGill-NLP/electra-medal
+[30]xlm-roberta-base
+[31]SpanBERT/spanbert-base-cased
+[32]canwenxu/BERT-of-Theseus-MNLI
+[33]slider/mirror-bert
+[34]minhpqn/bio_roberta-base_pubmed
+[35]tbs17/MathBERT
+[36]antoinelouis/netbert
+[37]nlpaueb/legal-bert-base-uncased
+[38]microsoft/graphcodebert-base
+[39]GroNLP/hateBERT
+[40]cardiffnlp/twitter-roberta-base-sentiment-latest
+[41]StanfordAIMI/RadBERT
+[42]StanfordAIMI/covid-radbert
+[43]google/mobilebert-uncased
+[44]cambridgeltl/mirrorwic-bert-base-uncased
+[45]facebook/muppet-roberta-base
+[46]mmoradi/Robust-Biomed-RoBERTa-QuestionAnswering
+[47]AnReu/math_pretrained_roberta
+[48]nguyenthanhasia/BERTLaw
+[49]allenai/biomed_roberta_base
+[50]chkla/roberta-argument
+Please rank all the 50 models.Rember that you don't have to give an accurate ranking list,any possible inference is OK.
+You need to solve this problem in 4 steps:
+1.Search information of the given Dataset.
+2.Search characteristics, structure, target tasks, applied domain and config settings for every given model.
+3.Consider the addtional information I gave you above.
+4.Combine all the knowledge you got through steps 1-3 and output the ranking list.
+Now please output a brief ranking list of 50 models instead of explanation.
+
+### Here is the output of Bing Chat responding to the prompt listed above:
+Based on the information provided and the characteristics of the models, here is a possible ranking for the Natural Questions dataset:
+
+1. microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext
+2. dmis-lab/biobert-base-cased-v1.1
+3. allenai/scibert_scivocab_cased
+4. allenai/scibert_scivocab_uncased
+5. nghuyong/ernie-2.0-base-en
+6. distilbert-base-cased
+7. distilbert-base-uncased
+8. bert-base-uncased
+9. bert-base-cased
+10. roberta-base
+11. distilroberta-base
+12. distilgpt2
+13. distilbert-base-multilingual-cased
+14. albert-base-v2
+15. michiyasunaga/BioLinkBERT-base
+16. medicalai/ClinicalBERT
+17. bionlp/bluebert_pubmed_uncased_L-12_H-768_A-12
+18. medical-ner-proj/bert-medical-ner-proj
+19. seiya/oubiobert-base-uncased
+20. kamalkraj/bioelectra-base-discriminator-pubmed
+21. cambridgeltl/BioRedditBERT-uncased
+22. cambridgeltl/mirror-bert-base-uncased-word
+23. cambridgeltl/SapBERT-from-PubMedBERT-fulltext
+24. McGill-NLP/electra-medal
+25. xlm-roberta-base
+26. SpanBERT/spanbert-base-cased
+27. canwenxu/BERT-of-Theseus-MNLI
+28. slider/mirror-bert
+29. minhpqn/bio_roberta-base_pubmed
+30. tbs17/MathBERT
+31. antoinelouis/netbert
+32. nlpaueb/legal-bert-base-uncased
+33. microsoft/graphcodebert-base
+34. GroNLP/hateBERT
+35. cardiffnlp/twitter-roberta-base-sentiment-latest
+36. StanfordAIMI/RadBERT
+37. StanfordAIMI/covid-radbert
+38. google/mobilebert-uncased
+39. cambridgeltl/mirrorwic-bert-base-uncased
+40. facebook/muppet-roberta-base
+41. mmoradi/Robust-Biomed-RoBERTa-QuestionAnswering
+42. AnReu/math_pretrained_roberta
+43. nguyenthanhasia/BERTLaw
+44. allenai/biomed_roberta_base
+45. chkla/roberta-argument
+46. princeton-nlp/unsup-simcse-bert-base-uncased
+47. princeton-nlp/sup-simcse-bert-base-uncased
+48. openai-gpt
+49. facebook/bart-base
+50. google/electra-base-discriminator
+
+Please note that this is a rough estimation and the actual performance may vary depending on the specific task and fine-tuning process. It's always recommended to experiment with a subset of models to find the best fit for your specific task.
+
+
 
 ## License and Disclaimer
 Please see the LICENSE file for details. Downloading data indicates your acceptance of our disclaimer.
