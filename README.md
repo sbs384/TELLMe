@@ -16,7 +16,7 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
 ## Candidate Pre-trained Models for Model Retrieval
 In the model retrieval stage, we first fine-tuned 50 pre-trained models as candidate pool. All the pre-trained model used can be found on huggingface according to the models' name. The list of pre-trained models and their performance on the ReQA BioASQ 9b, SciFact and NQ datasets are represented as follows.
 
-### Pre-trained model Performance on ReQA BioASQ 9b Dataset
+### Pre-trained model Performance on the ReQA BioASQ 9b Dataset
 | Number | Pre-trained Model | MRR | P@1 | R@5 |
 | :---         | :---      | :---: | :---: | :---: |
 | 1 | bert-base-uncased | 0.693 | 0.588 | 0.673 |
@@ -51,7 +51,7 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 | 30 | xlm-roberta-base | 0.580 | 0.467 | 0.557 |
 | 31 | spanbert-base-cased | 0.650 | 0.545 | 0.624 |
 | 32 | BERT-of-Theseus-MNLI | 0.594 | 0.491 | 0.560 |
-| 33 | mirror-bert & 0.619 | 0.527 & 0.568 |
+| 33 | mirror-bert & 0.619 | 0.527 | 0.568 |
 | 34 | bio_roberta-base_pubmed | 0.632 | 0.510 | 0.624 |
 | 35 | MathBERT | 0.552 | 0.456 | 0.501 |
 | 36 | netbert | 0.631 | 0.532 | 0.589 |
@@ -70,12 +70,12 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 | 49 | biomed_roberta_base | 0.631 | 0.510 | 0.618 |
 | 50 | roberta-argument | 0.631 | 0.517 | 0.613 |
 
-### Pre-trained model Performance on SciFact Dataset
+### Pre-trained model Performance on the SciFact Dataset
 | Number | Pre-trained Model | MRR | P@1 | R@5 |
 | :---         | :---      | :---: | :---: | :---: |
 1 | bert-base-uncased | 0.618 | 0.515 | 0.724 |
 2 | bert-base-cased | 0.607 | 0.505 | 0.709 |
-3 | roberta-base & 0.578 | 0.476 | 0.681 |
+3 | roberta-base | 0.578 | 0.476 | 0.681 |
 4 | biobert-base-cased-v1.1 | 0.672 | 0.565 | 0.797 |
 5 | electra-base-discriminator | 0.385 | 0.285 | 0.476 |
 6 | unsup-simcse-bert-base-uncased | 0.603 | 0.498 | 0.710 |
@@ -124,7 +124,7 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 49 | biomed_roberta_base | 0.580 | 0.467 | 0.700 |
 50 | roberta-argument | 0.564 | 0.463 | 0.669 |
 
-### Pre-trained model Performance on NQ Dataset
+### Pre-trained model Performance on the NQ Dataset
 | Number | Pre-trained Model | MRR | P@1 | R@5 |
 | :---         | :---      | :---: | :---: | :---: |
 | 1 | bert-base-uncased | 0.619 | 0.532 | 0.730 |
