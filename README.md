@@ -47,6 +47,14 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
 </table>
 #Q，#D，#C represent the query number, the document number and candidate document number respectively.
 
+##Evaluation
+###模型检索
+采用top-$k$召回率（${\rm Recall@K}$, ${\rm R@K}$）作为评估指标，用于模型检索的${\rm R@K}$计算方式为：
+\begin{equation}
+    \mbox{R@K} = \frac{|\Phi^{mr}_{top_K} \cap \Phi^{real}_{top_K}|}{K}
+\end{equation}
+其中$\Phi^{mr}_{top_K}$是模型检索阶段得到的排名前$K$的模型集合，$\Phi^{real}_{top_K}$是真实的排名前$K$的模型集合。
+
 
 
 ## Candidate Pre-trained Models for Model Retrieval
@@ -243,18 +251,17 @@ In the model ranking stage, we randomly selected 20 models from the aforemention
 
 
 ## Example
+We show the running cases of the code used for the related experiments. 
 
-We show the running cases of the baseline model (Dual-BioBERT) and the proposed RBAR-BioBERT on ReQA BioASQ 9b dataset, the other experiments can also be reproduced by using the hyper-parameters provided in the paper.
-
-### Transforming BioASQ dataset into ReQA BioASQ dataset
+### Fine-tuning 50 candidate pre-trained models.
 First of all, run the script "run_data_processing.sh".
 ```bash
 # Transform the BioASQ 9b dataset into ReQA BioASQ 9b.
 python3 reqa_bioasq_data_processing.py --dataset 9b
 ```
 
-### Dual-BioBERT
-#### 1. Fine-tuning Dual-BioBERT on ReQA BioASQ dataset
+### Model ranking.
+#### 1. Calculate transferability scores using EaSe.
 run the script "run_reqa_baseline.sh".
 ```bash
 python3 train_reqa.py \
@@ -279,9 +286,7 @@ python3 train_reqa.py \
     --rm_saved_model True \
     --save_results True \
 ```
-
-### RBAR-BioBERT
-#### 1. Pre-training on NLI datasets
+#### 2. Evaluating Kendalls'$\tau$ between EaSe and fine-tuning performance of pre-trained models.
 run the script "run_nli_ranking.sh".
 ```bash
 python3 train_nli_ranking.py \
