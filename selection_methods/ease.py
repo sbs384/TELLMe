@@ -156,25 +156,18 @@ class LogME(object):
     _fit = _fit_icml
 
 
-    def score(self, features, src_embeddings, candidate_embeddings):
+    def score(self, features, labels):
 
         # import pdb; pdb.set_trace()
         
         start_time = time.time()
         
-
-        src_embeddings /= np.linalg.norm(src_embeddings, axis=2, keepdims=True)
-        candidate_embeddings /= np.linalg.norm(candidate_embeddings, axis=2, keepdims=True)
-        matching_scores = np.sum(src_embeddings * candidate_embeddings, axis = 2)
-        matching_scores = (matching_scores + 1) / 2
-        labels = ((matching_scores) / (1e-8 + np.sum(matching_scores, axis=1, keepdims=True)))
-        
-        margin = float(self.args.method.split("-")[-1] if len(self.args.method.split("-")) > 1 else 0)
-        labels[:, 0] += margin
-        labels[:, 1:] -= (margin / (int(self.args.candidate_size) - 1))
-        labels = np.concatenate(labels, 0)
-       
-        
+        margin = float(self.args.method.split("-")[2] if len(self.args.method.split("-")) > 1 else 0)
+        num_neg = (margin / (int(self.args.candidate_size) - 1))
+        num_pos = margin + num_neg
+        labels[:] -= num_neg
+        labels[0 : labels.shape[0]: int(self.args.candidate_size)] += num_pos
+        #print(f"{self.args.model_name_or_path}_{self.args.method}_{self.args.candidate_size}_{self.args.seed}:\n{labels}")
         
         '''
         src_num = src_embeddings.shape[0]
