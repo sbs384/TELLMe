@@ -9,8 +9,42 @@ transformers==4.30.2
 torch==2.1.0
 ```
 
-## Dataset
-The proposed TELLMe framework involves 2 stage: model retrieval and model selection. We implement experiments on 3 datasets: ReQA BioASQ 9b, SciFact and NQ. It is noted that we use 10,000 samples extracted from NQ to calculate EaSe scores for model ranking, which is named as 'NQ_sample'. All the datasets can be download from [AllNLI.tsv.gz](https://sbert.net/datasets/AllNLI.tsv.gz). The downloaded data package should be unzip to "./data/".
+## Datasets
+The proposed TELLMe framework involves 2 stage: model retrieval and model selection. We implement experiments on 3 datasets: ReQA BioASQ 9b, SciFact and NQ. It is noted that we use 10,000 samples extracted from NQ to calculate EaSe scores for model ranking, which is named as 'NQ_sample'. All the datasets can be download from [AllNLI.tsv.gz](https://sbert.net/datasets/AllNLI.tsv.gz). The downloaded data package should be unzip to "./data/". Here is the statistics information of the 3 datasets:
+<table>
+   <tr>
+      <td>实现类</td>
+      <td>解释</td>
+   </tr>
+   <tr>
+      <td rowspan="3">HashMap  </td>
+      <td  align="left">1.非线程安全。<br>(
+      <br>线程安全用:
+      <br>a.Collections下synchronizedMap <br> b.使用JUC下ConcurrentHashMap
+      <br>)</td>
+   </tr>
+   <tr>
+      <td align="left">2.只允许一条记录的Key为null。（value无所谓可以多个为null）</td>
+   </tr>
+   <tr>
+      <td align="left">3.Key计算hashCode值存储数据。（具有很快的访问速度，顺序是不确定的）</td>
+   </tr>
+   <tr>
+      <td  rowspan="2">HashTable</td>
+      <td align="left">1.线程安全的。（任一时间只有一个线程能写Hashtable。不需要线程安全时可以用HashMap替换，需要线程安全时用分段锁的ConcurrentHashMap替换，所以一般不建议使用。</td>
+   </tr>
+   <tr>
+      <td align="left">2.键值都不可为null。（承自Dictionary类）</td>
+   </tr>
+   <tr>
+      <td>LinkedHashMap</td>
+      <td align="left">排序。（LinkedHashMap是HashMap的一个子类。保存了记录的插入顺序，在用Iterator遍历LinkedHashMap时，先得到的记录肯定是先插入的，也可以在构造时带参数，按照访问次序排序）</td>
+   </tr>
+   <tr>
+      <td>TreeMap</td>
+      <td align="left">排序。（TreeMap实现SortedMap接口。在使用TreeMap时，key必须实现Comparable接口或者在构造TreeMap传入自定义的Comparator，否则会在运行时抛出java.lang.ClassCastException类型的异常）</td>
+   </tr>
+</table>
 
 
 ## Candidate Pre-trained Models for Model Retrieval
@@ -40,7 +74,7 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 | 19 | BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext | 0.748 | 0.633 | 0.736 |
 | 20 | BioLinkBERT-base | 0.717 | 0.600 | 0.713 |
 | 21 | ClinicalBERT | 0.603 | 0.494 | 0.587 |
-| 22 | bluebert_pubmed_uncased_L-12_H-768_A-12 | 0.623 & 0.512 & 0.601 |
+| 22 | bluebert_pubmed_uncased_L-12_H-768_A-12 | 0.623 | 0.512 | 0.601 |
 | 23 | bert-medical-ner-proj | 0.650 | 0.540 | 0.627 |
 | 24 | oubiobert-base-uncased | 0.711 | 0.593 | 0.704 |
 | 25 | bioelectra-base-discriminator-pubmed | 0.533 | 0.423 | 0.498 |
@@ -51,7 +85,7 @@ In the model retrieval stage, we first fine-tuned 50 pre-trained models as candi
 | 30 | xlm-roberta-base | 0.580 | 0.467 | 0.557 |
 | 31 | spanbert-base-cased | 0.650 | 0.545 | 0.624 |
 | 32 | BERT-of-Theseus-MNLI | 0.594 | 0.491 | 0.560 |
-| 33 | mirror-bert & 0.619 | 0.527 | 0.568 |
+| 33 | mirror-bert | 0.619 | 0.527 | 0.568 |
 | 34 | bio_roberta-base_pubmed | 0.632 | 0.510 | 0.624 |
 | 35 | MathBERT | 0.552 | 0.456 | 0.501 |
 | 36 | netbert | 0.631 | 0.532 | 0.589 |
