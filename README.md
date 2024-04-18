@@ -10,7 +10,7 @@ torch==2.1.0
 ```
 
 ## Datasets
-The proposed TELLMe framework involves 2 stage: model retrieval and model selection. We implement experiments on 3 datasets: ReQA BioASQ 9b, SciFact and NQ. It is noted that we use 10,000 samples extracted from NQ to calculate EaSe scores for model ranking, which is named as 'NQ_sample'. The data ca be download from [data](https://www.dropbox.com/scl/fi/p06yqwpq7mu42jpwj8ojj/data.zip?rlkey=vtjxobbcy3rwoiily961s2nlf&dl=0). The downloaded data package should be unzip to "./data/.Table 1 describes the statistics of all the datasets:
+The proposed TELLMe framework involves 2 stages: model retrieval and model ranking. We implemented experiments on 3 datasets: ReQA BioASQ 9b, SciFact and NQ. It is noted that we used 10,000 samples extracted from NQ to compute EaSe scores for model ranking, which is named as 'NQ_sample'. The data can be download from [data](https://www.dropbox.com/scl/fi/p06yqwpq7mu42jpwj8ojj/data.zip?rlkey=vtjxobbcy3rwoiily961s2nlf&dl=0). The downloaded data package should be unzip to "./data/. Table 1 describes the data statistics:
 ### Table 1. Dataset Statistics
 <table>
    <tr>
@@ -49,10 +49,10 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
 #Q，#D，#C represent the query number, the document number and candidate document number respectively.
 
 ## Example
-We show the running cases of the code used for the related experiments. 
+We show the running cases for the related experiments. 
 
 ### Fine-tuning
-To fine-tune all the candidate pre-trained models, run the script "run_reqa.sh". In the following example, we show a fine-tuning process of bert-base-un-cased(BERT) and dmis-lab/biobert-base-cased-v1.1(BioBERT) on bioasq9b. To obtain the best performance of each pre-trained model on different dataset, we tried several hyper-parameter combinations. For the ReQA and SciFact datasets, learning rate is set among 1e-5, 2e-5, 3e-4, 4e-5 and 5e-5; seeds are set to 0, 42 and 512. For the NQ dataset, learning rate is set among 2e-5, 3e-4, 4e-5 and 5e-5; seeds are set to 0, 42 and 512. Other args are the same as what showed in the script example.
+To fine-tune all the candidate pre-trained models, run the script "run_reqa.sh". In the following example, we show a fine-tuning process of bert-base-un-cased(BERT) and dmis-lab/biobert-base-cased-v1.1(BioBERT) on bioasq9b. To obtain the best performance of each pre-trained model on different datasets, we tried several hyper-parameter combinations. For the ReQA and SciFact datasets, learning rate is set among 1e-5, 2e-5, 3e-4, 4e-5 and 5e-5; seeds are set to 0, 42 and 512. For the NQ dataset, learning rate is set among 2e-5, 3e-4, 4e-5 and 5e-5; seeds are set to 0, 42 and 512. Other args are the same as what are showed in the script example.
 ```bash
 export  CUDA_VISIBLE_DEVICES=0
 DATASET=bioasq9b
@@ -87,7 +87,7 @@ done
 ```
 
 ### Model ranking
-#### 1. Calculate transferability scores using EaSe.
+#### 1. Computing transferability scores of EaSe.
 To calculate transferability scores, run the script "run_model_selection.sh". METHODS represents different transferability estimation methods.
 ```bash
 #!/bin/bash
@@ -370,6 +370,7 @@ I will give you some addtional information.The first part of the additional info
 9.Dataset:SciFact.Models:\[1,2,5,6,8\].Ranking:\[1,2,6,8,5\] \
 10.Dataset:SciFact.Models:\[2,5,9,10,16\].Ranking:\[10,9,2,5,16\] \
 With the growing number of Pre-trained Language Models recently,fine-tuning all PLMs for model selection is not practical,I usually don't know which PLM should  be selected to achieve the best dataset performance.Here is the problem I want you to solve:For Natural Questions dataset,and the candidate models:
+
 \[1\]bert-base-uncased \
 \[2\]bert-base-cased \
 \[3\]roberta-base \
@@ -428,7 +429,7 @@ You need to solve this problem in 4 steps:
 4.Combine all the knowledge you got through steps 1-3 and output the ranking list.
 Now please output a brief ranking list of 50 models instead of explanation.
 
-#### Here is the output of Bing Chat responding to the prompt listed above:
+#### Here is the output of Bing Chat responding to the prompt showed above:
 
 Based on the information provided and the characteristics of the models, here is a possible ranking for the Natural Questions dataset:
 
