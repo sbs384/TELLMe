@@ -51,7 +51,7 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
 ## Evaluation Metrics
 ### Model Retrieval
 For model retrieval, the top-K recall rate (Recall@K, R@K$) is used as the evaluation metric. The calculation of R@K for model retrieval is as follows:
-$R@K = \frac{|\Phi^{mr}_{top_K} \cap \Phi^{real}_{top_K}|}{K}$
+$$R@K = \frac{|\Phi^{mr}_{top_K} \cap \Phi^{real}_{top_K}|}{K}$$
 where $\Phi^{mr}_{top_K}$ is the set of top K models obtained during the model retrieval stage, and $\Phi^{real}_{top_K}$ is the set of top K models in reality.
 
 ## Example
