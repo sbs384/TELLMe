@@ -487,10 +487,5 @@ Based on the information provided and the characteristics of the models, here is
 Please note that this is a rough estimation and the actual performance may vary depending on the specific task and fine-tuning process. It's always recommended to experiment with a subset of models to find the best fit for your specific task.
 
 
-
-## License and Disclaimer
-Please see the LICENSE file for details. Downloading data indicates your acceptance of our disclaimer.
-
-
 ## Contact
 For help or issues using RBAR framework, please create an issue.
