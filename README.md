@@ -10,7 +10,7 @@ torch==2.1.0
 ```
 
 ## Datasets
-The proposed TELLMe framework involves 2 stage: model retrieval and model selection. We implement experiments on 3 datasets: ReQA BioASQ 9b, SciFact and NQ. It is noted that we use 10,000 samples extracted from NQ to calculate EaSe scores for model ranking, which is named as 'NQ_sample'. Table 1 describes the statistics of all the datasets:
+The proposed TELLMe framework involves 2 stage: model retrieval and model selection. We implement experiments on 3 datasets: ReQA BioASQ 9b, SciFact and NQ. It is noted that we use 10,000 samples extracted from NQ to calculate EaSe scores for model ranking, which is named as 'NQ_sample'. The data ca be download from [data](https://www.dropbox.com/scl/fi/p06yqwpq7mu42jpwj8ojj/data.zip?rlkey=vtjxobbcy3rwoiily961s2nlf&dl=0). The downloaded data package should be unzip to "./data/.Table 1 describes the statistics of all the datasets:
 ### Table 1. Dataset Statistics
 <table>
    <tr>
@@ -47,6 +47,105 @@ The proposed TELLMe framework involves 2 stage: model retrieval and model select
    </tr>
 </table>
 #Q，#D，#C represent the query number, the document number and candidate document number respectively.
+
+## Evaluation Metrics
+## Model Retrieval
+For model retrieval, the top-$k$ recall rate (${ \text{Recall@K} }$, ${ \text{R@K} }$) is used as the evaluation metric. The calculation of ${ \text{R@K} }$ for model retrieval is as follows:
+\text{R@K} = \frac{|\Phi^{mr}_{top_K} \cap \Phi^{real}_{top_K}|}{K}
+where $\Phi^{mr}_{top_K}$ is the set of top $K$ models obtained during the model retrieval stage, and $\Phi^{real}_{top_K}$ is the set of top $K$ models in reality.
+
+## Example
+We show the running cases of the code used for the related experiments. 
+
+### Fine-tuning
+To fine-tune all the candidate pre-trained models, run the script "run_reqa.sh". In the following example, we show a fine-tuning process of bert-base-un-cased(BERT) and dmis-lab/biobert-base-cased-v1.1(BioBERT) on bioasq9b. To obtain the best performance of each pre-trained model on different dataset, we tried several hyper-parameter combinations. For the ReQA and SciFact datasets, learning rate is set among 1e-5, 2e-5, 3e-4, 4e-5 and 5e-5; seeds are set to 0, 42 and 512. For the NQ dataset, learning rate is set among 2e-5, 3e-4, 4e-5 and 5e-5; seeds are set to 0, 42 and 512. Other args are the same as what showed in the script example.
+```bash
+export  CUDA_VISIBLE_DEVICES=0
+DATASET=bioasq9b
+POOLER=mean
+BATCH_SIZE=32
+NUM_EPOCHS=10
+CACHE_DIR=/home/lzz/myfile/models  # your path to the pre-trained model parameters
+for PLM in bert-base-uncased dmis-lab/biobert-base-cased-v1.1
+do
+    for LR in 1e-5 2e-5 3e-5 4e-5 5e-5
+    do
+        SAVE_DIR=./output/${DATASET}/fine_tuning/${PLM#*/}_${POOLER}/bs${BATCH_SIZE}_e${NUM_EPOCHS}_lr${LR}/
+        mkdir -p ${SAVE_DIR}
+        nohup python3 train_reqa.py \
+            --seeds 0 42 512 2023 20246\
+            --main_metric mrr \
+            --dataset ${DATASET} \
+            --epoch ${NUM_EPOCHS} \
+            --batch_size ${BATCH_SIZE} \
+            --pooler ${POOLER} \
+            --model_name_or_path ${PLM} \
+            --matching_func dot \
+            --temperature 1 \
+            --cache_dir ${CACHE_DIR} \
+            --learning_rate ${LR} \
+            --save_dir ${SAVE_DIR} \
+            --rm_saved_model True \
+            --save_results True \
+            > ${SAVE_DIR}/run.log 2>&1
+    done 
+done
+```
+
+### Model ranking
+#### 1. Calculate transferability scores using EaSe.
+To calculate transferability scores, run the script "run_model_selection.sh". METHODS represents different transferability estimation methods.
+```bash
+#!/bin/bash
+export  CUDA_VISIBLE_DEVICES=0
+DATASETS=("bioasq9b")
+DATASET="bioasq9b"
+CACHE_DIR=/home/lzz/myfile/models # your path to the pre-trained model parameters
+
+# candidate pre-trained models for model ranking 
+LM_NAMES="bert-base-cased bert-base-uncased roberta-base dmis-lab/biobert-base-cased-v1.1 google/electra-base-discriminator \
+          princeton-nlp/unsup-simcse-bert-base-uncased princeton-nlp/sup-simcse-bert-base-uncased facebook/bart-base \
+          allenai/scibert_scivocab_cased allenai/scibert_scivocab_uncased distilbert-base-cased distilbert-base-uncased \
+          nghuyong/ernie-2.0-base-en distilroberta-base distilbert-base-multilingual-cased albert-base-v2 \
+          microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext michiyasunaga/BioLinkBERT-base distilgpt2 openai-gpt"
+
+
+SEEDS="1117 1114 1027 820 905"
+ALL_CANDIDATE_SIZES="2 3 4 5 6 7 8 9 10"
+#METHODS="PACTran-0.1-10 Logistic GBC TransRate SFDA LogME HScore NLEEP" #compared tansferability estimation methods.
+METHODS="EaSe-whitening-0 EaSe-whitening-0.05 EaSe-whitening-0.1 EaSe-whitening-0.15 EaSe-whitening-0.2 EaSe-whitening-0.25 \
+             EaSe-whitening-0.3 EaSe-whitening-0.35 EaSe-whitening-0.4 EaSe-whitening-0.45 EaSe-whitening-0.5 EaSe-whitening-0.55 \
+             EaSe-whitening-0.6 EaSe-whitening-0.65 EaSe-whitening-0.7 EaSe-whitening-0.75 EaSe-whitening-0.8 EaSe-whitening-0.85 \
+             EaSe-whitening-0.9 EaSe-whitening-0.95 EaSe-whitening-1"
+#METHODS="EaSe-0.05 EaSe-0.1 EaSe-0.15 EaSe-0.2 EaSe-0.25 \
+#             EaSe-0.3 EaSe-0.35 EaSe-0.4 EaSe-0.45 EaSe-0.5 EaSe-0.55 \
+#             EaSe-0.6 EaSe-0.65 EaSe-0.7 EaSe-0.75 EaSe-0.8 EaSe-0.85 \
+#             EaSe-0.9 EaSe-0.95 EaSe-1 EaSe-0 "
+SAVE_RESULTS="True"
+OVERWRITE_RESULTS="False"
+dataset=${DATASET}
+SAVE_DIR=./output/${DATASET}/model_selection/
+mkdir -p ${SAVE_DIR}
+nohup python3 model_selection.py \
+    --methods ${METHODS} \
+    --all_candidate_sizes $ALL_CANDIDATE_SIZES \
+    --dataset $dataset \
+    --batch_size 64 \
+    --model_name_or_paths ${LM_NAMES} \
+    --matching_func dot \
+    --pooler mean \
+    --cache_dir ${CACHE_DIR} \
+    --seeds ${SEEDS} \
+    --save_results ${SAVE_RESULTS} \
+    --overwrite_results ${OVERWRITE_RESULTS} \
+    --save_dir ${SAVE_DIR} \
+    > ${SAVE_DIR}/run.log 2>&1
+```
+#### 2. Evaluating Kendalls' $\tau$ between EaSe and fine-tuning performance of pre-trained models.
+run the script "eval_model_selection.py".
+```python3 
+eval_model_selection.py
+```
 
 ## Candidate Pre-trained Models for Model Retrieval
 In the model retrieval stage, we first fine-tuned 50 pre-trained models as candidate pool. All the pre-trained model used can be found on huggingface according to the models' name. The list of pre-trained models and their performance on the ReQA BioASQ 9b, SciFact and NQ datasets are represented in Table 2, Table 3 and Table 4.
@@ -240,103 +339,6 @@ In the model ranking stage, we randomly selected 20 models from the aforemention
 | 18 | albert-base-v2 |
 | 19 | BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext |
 | 20 | BioLinkBERT-base |
-
-
-## Example
-We show the running cases of the code used for the related experiments. 
-
-### Fine-tuning
-To fine-tune all the candidate pre-trained models, run the script "run_reqa.sh". In the following example, we show a fine-tuning process of bert-base-un-cased(BERT) and dmis-lab/biobert-base-cased-v1.1(BioBERT) on bioasq9b. To obtain the best performance of each pre-trained model on different dataset, we tried several hyper-parameter combinations. For the ReQA and SciFact datasets, learning rate is set among 1e-5, 2e-5, 3e-4, 4e-5 and 5e-5; seeds are set to 0, 42 and 512. For the NQ dataset, learning rate is set among 2e-5, 3e-4, 4e-5 and 5e-5; seeds are set to 0, 42 and 512. Other args are the same as what showed in the script example.
-```bash
-export  CUDA_VISIBLE_DEVICES=0
-DATASET=bioasq9b
-POOLER=mean
-BATCH_SIZE=32
-NUM_EPOCHS=10
-CACHE_DIR=/home/lzz/myfile/models  # your path to the pre-trained model parameters
-for PLM in bert-base-uncased dmis-lab/biobert-base-cased-v1.1
-do
-    for LR in 1e-5 2e-5 3e-5 4e-5 5e-5
-    do
-        SAVE_DIR=./output/${DATASET}/fine_tuning/${PLM#*/}_${POOLER}/bs${BATCH_SIZE}_e${NUM_EPOCHS}_lr${LR}/
-        mkdir -p ${SAVE_DIR}
-        nohup python3 train_reqa.py \
-            --seeds 0 42 512 2023 20246\
-            --main_metric mrr \
-            --dataset ${DATASET} \
-            --epoch ${NUM_EPOCHS} \
-            --batch_size ${BATCH_SIZE} \
-            --pooler ${POOLER} \
-            --model_name_or_path ${PLM} \
-            --matching_func dot \
-            --temperature 1 \
-            --cache_dir ${CACHE_DIR} \
-            --learning_rate ${LR} \
-            --save_dir ${SAVE_DIR} \
-            --rm_saved_model True \
-            --save_results True \
-            > ${SAVE_DIR}/run.log 2>&1
-    done 
-done
-```
-
-### Model ranking
-#### 1. Calculate transferability scores using EaSe.
-To calculate transferability scores, run the script "run_model_selection.sh". METHODS represents different transferability estimation methods.
-```bash
-#!/bin/bash
-export  CUDA_VISIBLE_DEVICES=0
-DATASETS=("bioasq9b")
-DATASET="bioasq9b"
-CACHE_DIR=/home/lzz/myfile/models # your path to the pre-trained model parameters
-
-# candidate pre-trained models for model ranking 
-LM_NAMES="bert-base-cased bert-base-uncased roberta-base dmis-lab/biobert-base-cased-v1.1 google/electra-base-discriminator \
-          princeton-nlp/unsup-simcse-bert-base-uncased princeton-nlp/sup-simcse-bert-base-uncased facebook/bart-base \
-          allenai/scibert_scivocab_cased allenai/scibert_scivocab_uncased distilbert-base-cased distilbert-base-uncased \
-          nghuyong/ernie-2.0-base-en distilroberta-base distilbert-base-multilingual-cased albert-base-v2 \
-          microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext michiyasunaga/BioLinkBERT-base distilgpt2 openai-gpt"
-
-
-SEEDS="1117 1114 1027 820 905"
-ALL_CANDIDATE_SIZES="2 3 4 5 6 7 8 9 10"
-#METHODS="PACTran-0.1-10 Logistic GBC TransRate SFDA LogME HScore NLEEP" #compared tansferability estimation methods.
-METHODS="EaSe-whitening-0 EaSe-whitening-0.05 EaSe-whitening-0.1 EaSe-whitening-0.15 EaSe-whitening-0.2 EaSe-whitening-0.25 \
-             EaSe-whitening-0.3 EaSe-whitening-0.35 EaSe-whitening-0.4 EaSe-whitening-0.45 EaSe-whitening-0.5 EaSe-whitening-0.55 \
-             EaSe-whitening-0.6 EaSe-whitening-0.65 EaSe-whitening-0.7 EaSe-whitening-0.75 EaSe-whitening-0.8 EaSe-whitening-0.85 \
-             EaSe-whitening-0.9 EaSe-whitening-0.95 EaSe-whitening-1"
-#METHODS="EaSe-0.05 EaSe-0.1 EaSe-0.15 EaSe-0.2 EaSe-0.25 \
-#             EaSe-0.3 EaSe-0.35 EaSe-0.4 EaSe-0.45 EaSe-0.5 EaSe-0.55 \
-#             EaSe-0.6 EaSe-0.65 EaSe-0.7 EaSe-0.75 EaSe-0.8 EaSe-0.85 \
-#             EaSe-0.9 EaSe-0.95 EaSe-1 EaSe-0 "
-SAVE_RESULTS="True"
-OVERWRITE_RESULTS="False"
-dataset=${DATASET}
-SAVE_DIR=./output/${DATASET}/model_selection/
-mkdir -p ${SAVE_DIR}
-nohup python3 model_selection.py \
-    --methods ${METHODS} \
-    --all_candidate_sizes $ALL_CANDIDATE_SIZES \
-    --dataset $dataset \
-    --batch_size 64 \
-    --model_name_or_paths ${LM_NAMES} \
-    --matching_func dot \
-    --pooler mean \
-    --cache_dir ${CACHE_DIR} \
-    --seeds ${SEEDS} \
-    --save_results ${SAVE_RESULTS} \
-    --overwrite_results ${OVERWRITE_RESULTS} \
-    --save_dir ${SAVE_DIR} \
-    > ${SAVE_DIR}/run.log 2>&1
-```
-#### 2. Evaluating Kendalls' $\tau$ between EaSe and fine-tuning performance of pre-trained models.
-run the script "eval_model_selection.py".
-```python3 
-eval_model_selection.py
-```
-
-#### 2. Fine-tuning on ReQA BioASQ
-run the script "python3 eval_model_selection.py".
 
 ## An entire prompt used for model retrieval
 #### The following content is an entire prompt used for model retrieval on the NQ dataset, with both ICL(In-context Learning) and CoT(Chain-of-Thought). Here, $n_d=10$, $n_m=5$, $\{\mathcal{D}^{\prime}\}$ are ReQA BioASQ 9b and SciFact. 
