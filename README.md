@@ -358,7 +358,7 @@ I will give you some addtional information.The first part of the additional info
 \[18\]albert-base-v2 \
 \[19\]microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext \
 \[20\]michiyasunaga/BioLinkBERT-base \
-\The second part of the additional information is exampled ranking results of models mentioned above on a given dataset: \
+The second part of the additional information is exampled ranking results of models mentioned above on a given dataset: \
 1.Dataset:ReQA BioASQ-9b.Models:\[1,2,5,6,19\].Ranking:\[19,6,1,2,5\] \
 2.Dataset:ReQA BioASQ-9b.Models:\[3,4,16,18,19\].Ranking:\[19,4,3,18,16\] \
 3.Dataset:ReQA BioASQ-9b.Models:\[8,9,11,12,20\].Ranking:\[11,20,9,12,8\] \
