@@ -488,4 +488,4 @@ Please note that this is a rough estimation and the actual performance may vary 
 
 
 ## Contact
-For help or issues using RBAR framework, please create an issue.
+For help or issues using TELLMe framework, please create an issue.
