@@ -52,7 +52,7 @@ The proposed TELLMe framework involves 2 stages: model retrieval and model ranki
 We show the running cases for the related experiments. 
 
 ### Fine-tuning
-To fine-tune all the candidate pre-trained models, run the script "run_reqa.sh". In the following example, we show a fine-tuning process of bert-base-un-cased(BERT) and dmis-lab/biobert-base-cased-v1.1(BioBERT) on bioasq9b. To obtain the best performance of each pre-trained model on different datasets, we tried several hyper-parameter combinations. For the ReQA and SciFact datasets, learning rate is set among 1e-5, 2e-5, 3e-4, 4e-5 and 5e-5; seeds are set to 0, 42 and 512. For the NQ dataset, learning rate is set among 2e-5, 3e-4, 4e-5 and 5e-5; seeds are set to 0, 42 and 512. Other args are the same as what are showed in the script example.
+To fine-tune all the candidate pre-trained models, run the script "run_reqa.sh". In the following example, we show a fine-tuning process of bert-base-un-cased(BERT) and dmis-lab/biobert-base-cased-v1.1(BioBERT) on bioasq9b. To obtain the best performance of each pre-trained model on different datasets, we tried several hyper-parameter combinations. For the ReQA and SciFact datasets, learning rate is set among 1e-5, 2e-5, 3e-4, 4e-5 and 5e-5; seeds are set to 0, 42, 512, 2023 and 20246. For the NQ dataset, learning rate is set among 2e-5, 3e-4, 4e-5 and 5e-5; seeds are set to 0, 42 and 512. Other args are the same as what are showed in the script example.
 ```bash
 export  CUDA_VISIBLE_DEVICES=0
 DATASET=bioasq9b
